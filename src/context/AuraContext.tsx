@@ -431,6 +431,99 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
     { id: 2, type: "estoque", message: "Estoque crítico: Óleo para Barba Wood & Spice 30ml abaixo do mínimo!", read: false, created_at: getTodayISO("08:15") },
     { id: 3, type: "agendamento", message: "Novo agendamento: Marcelo Rodrigues reservou Corte Social às 16:30.", read: true, created_at: getTodayISO("09:00") }
   ]);
+  // Load from localStorage on mount
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const storedClients = localStorage.getItem("aura_clients");
+        if (storedClients) setClients(JSON.parse(storedClients));
+
+        const storedAppts = localStorage.getItem("aura_appointments");
+        if (storedAppts) setAppointments(JSON.parse(storedAppts));
+
+        const storedFin = localStorage.getItem("aura_financial_entries");
+        if (storedFin) setFinancialEntries(JSON.parse(storedFin));
+
+        const storedTasks = localStorage.getItem("aura_tasks");
+        if (storedTasks) setTasks(JSON.parse(storedTasks));
+
+        const storedWaiting = localStorage.getItem("aura_waiting_list");
+        if (storedWaiting) setWaitingList(JSON.parse(storedWaiting));
+
+        const storedNotifs = localStorage.getItem("aura_notifications");
+        if (storedNotifs) setNotifications(JSON.parse(storedNotifs));
+
+        const storedProducts = localStorage.getItem("aura_products");
+        if (storedProducts) setProducts(JSON.parse(storedProducts));
+
+        const storedServices = localStorage.getItem("aura_services");
+        if (storedServices) setServices(JSON.parse(storedServices));
+
+        const storedProfs = localStorage.getItem("aura_professionals");
+        if (storedProfs) setProfessionals(JSON.parse(storedProfs));
+      } catch (e) {
+        console.error("Error loading state from localStorage:", e);
+      }
+      setIsInitialized(true);
+    }
+  }, []);
+
+  // Save to localStorage when states change, but only after initialization
+  useEffect(() => {
+    if (isInitialized && typeof window !== "undefined") {
+      localStorage.setItem("aura_clients", JSON.stringify(clients));
+    }
+  }, [clients, isInitialized]);
+
+  useEffect(() => {
+    if (isInitialized && typeof window !== "undefined") {
+      localStorage.setItem("aura_appointments", JSON.stringify(appointments));
+    }
+  }, [appointments, isInitialized]);
+
+  useEffect(() => {
+    if (isInitialized && typeof window !== "undefined") {
+      localStorage.setItem("aura_financial_entries", JSON.stringify(financialEntries));
+    }
+  }, [financialEntries, isInitialized]);
+
+  useEffect(() => {
+    if (isInitialized && typeof window !== "undefined") {
+      localStorage.setItem("aura_tasks", JSON.stringify(tasks));
+    }
+  }, [tasks, isInitialized]);
+
+  useEffect(() => {
+    if (isInitialized && typeof window !== "undefined") {
+      localStorage.setItem("aura_waiting_list", JSON.stringify(waitingList));
+    }
+  }, [waitingList, isInitialized]);
+
+  useEffect(() => {
+    if (isInitialized && typeof window !== "undefined") {
+      localStorage.setItem("aura_notifications", JSON.stringify(notifications));
+    }
+  }, [notifications, isInitialized]);
+
+  useEffect(() => {
+    if (isInitialized && typeof window !== "undefined") {
+      localStorage.setItem("aura_products", JSON.stringify(products));
+    }
+  }, [products, isInitialized]);
+
+  useEffect(() => {
+    if (isInitialized && typeof window !== "undefined") {
+      localStorage.setItem("aura_services", JSON.stringify(services));
+    }
+  }, [services, isInitialized]);
+
+  useEffect(() => {
+    if (isInitialized && typeof window !== "undefined") {
+      localStorage.setItem("aura_professionals", JSON.stringify(professionals));
+    }
+  }, [professionals, isInitialized]);
 
   // Trigger notification on load for expiry date
   useEffect(() => {

@@ -76,7 +76,7 @@ export default function LandingPageClient() {
       // 2. Format DateTime
       const [year, month, day] = selectedDate.split("-").map(Number);
       const [hour, minute] = selectedTime.split(":").map(Number);
-      const dateObj = new Date(year, month - 1, day, hour, minute);
+      const dateObj = new Date(Date.UTC(year, month - 1, day, hour, minute));
 
       // 3. Add Appointment
       addAppointment({
@@ -314,6 +314,12 @@ export default function LandingPageClient() {
                           onChange={(e) => setSelectedDate(e.target.value)}
                           className="w-full px-3.5 py-3 bg-salon-bg border border-salon-border rounded-lg text-xs focus:outline-none focus:border-primary/50 text-salon-text-primary cursor-pointer"
                         />
+                        {selectedDate && (
+                          <p className="text-[11px] text-primary font-semibold mt-1.5 flex items-center gap-1.5">
+                            <Calendar className="w-3.5 h-3.5" />
+                            Data selecionada: {selectedDate.split("-").reverse().join("/")}
+                          </p>
+                        )}
                       </div>
 
                       <div className="space-y-2">
