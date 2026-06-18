@@ -391,7 +391,7 @@ export default function ClienteDetalhePage({ params }: { params: { id: string } 
                         <img src={photo.after} alt="Depois" className="w-1/2 object-cover" />
                       </div>
                       <div className="bg-salon-bg/80 p-1 text-[9px] text-center border-t border-salon-border text-salon-text-secondary">
-                        {photo.date}
+                        {photo.date.includes("-") ? photo.date.split("-").reverse().join("/") : photo.date}
                       </div>
                     </div>
                   ))}

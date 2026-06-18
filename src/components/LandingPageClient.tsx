@@ -36,6 +36,67 @@ export default function LandingPageClient() {
   const [selectedServiceId, setSelectedServiceId] = useState<number>(services[0]?.id || 1);
   const [selectedProfId, setSelectedProfId] = useState<number>(professionals[0]?.id || 1);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
+  const [dateInputText, setDateInputText] = useState(() => {
+    const today = new Date();
+    const d = String(today.getDate()).padStart(2, '0');
+    const m = String(today.getMonth() + 1).padStart(2, '0');
+    const y = today.getFullYear();
+    return `${d}/${m}/${y}`;
+  });
+
+  const getNext7Days = () => {
+    const weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      const dayName = weekdays[d.getDay()];
+      const dayNum = String(d.getDate()).padStart(2, '0');
+      const monthNum = String(d.getMonth() + 1).padStart(2, '0');
+      const yearNum = d.getFullYear();
+      const isoString = `${yearNum}-${monthNum}-${dayNum}`;
+      days.push({
+        label: `${dayName} ${dayNum}/${monthNum}`,
+        value: isoString,
+        displayText: `${dayNum}/${monthNum}/${yearNum}`
+      });
+    }
+    return days;
+  };
+  const next7Days = getNext7Days();
+
+  const handleDateTextChange = (value: string) => {
+    const clean = value.replace(/\D/g, "");
+    let formatted = "";
+    if (clean.length > 0) {
+      formatted = clean.slice(0, 2);
+    }
+    if (clean.length > 2) {
+      formatted += "/" + clean.slice(2, 4);
+    }
+    if (clean.length > 4) {
+      formatted += "/" + clean.slice(4, 8);
+    }
+    setDateInputText(formatted);
+
+    if (clean.length === 8) {
+      const d = parseInt(clean.slice(0, 2), 10);
+      const m = parseInt(clean.slice(2, 4), 10);
+      const y = parseInt(clean.slice(4, 8), 10);
+      
+      const testDate = new Date(y, m - 1, d);
+      if (testDate.getFullYear() === y && testDate.getMonth() === m - 1 && testDate.getDate() === d) {
+        const yStr = String(y);
+        const mStr = String(m).padStart(2, '0');
+        const dStr = String(d).padStart(2, '0');
+        setSelectedDate(`${yStr}-${mStr}-${dStr}`);
+        setError(null);
+      } else {
+        setError("Data inválida. Use o formato DD/MM/AAAA.");
+      }
+    }
+  };
+
   const [selectedTime, setSelectedTime] = useState("10:00");
   const [isBooked, setIsBooked] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -304,22 +365,45 @@ export default function LandingPageClient() {
                 {bookingStep === 2 && (
                   <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="grid grid-cols-1 gap-4">
-                      <div className="space-y-1.5">
-                        <label className="block text-[10px] font-bold uppercase tracking-wider text-salon-text-secondary">Data do atendimento</label>
-                        <input
-                          type="date"
-                          required
-                          min={new Date().toISOString().split("T")[0]}
-                          value={selectedDate}
-                          onChange={(e) => setSelectedDate(e.target.value)}
-                          className="w-full px-3.5 py-3 bg-salon-bg border border-salon-border rounded-lg text-xs focus:outline-none focus:border-primary/50 text-salon-text-primary cursor-pointer"
-                        />
-                        {selectedDate && (
-                          <p className="text-[11px] text-primary font-semibold mt-1.5 flex items-center gap-1.5">
-                            <Calendar className="w-3.5 h-3.5" />
-                            Data selecionada: {selectedDate.split("-").reverse().join("/")}
-                          </p>
-                        )}
+                      <div className="space-y-3">
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-salon-text-secondary">Selecione o Dia</label>
+                        
+                        {/* Horizontal quick-select days */}
+                        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-primary/25 scrollbar-track-transparent">
+                          {next7Days.map((day) => {
+                            const isSelected = selectedDate === day.value;
+                            return (
+                              <button
+                                key={day.value}
+                                type="button"
+                                onClick={() => {
+                                  setSelectedDate(day.value);
+                                  setDateInputText(day.displayText);
+                                }}
+                                className={`py-2 px-3 border rounded-lg text-[10px] font-extrabold whitespace-nowrap transition-all duration-200 shrink-0 ${
+                                  isSelected
+                                    ? "bg-primary border-primary text-salon-bg shadow-[0_0_10px_rgba(201,169,110,0.3)]"
+                                    : "bg-salon-bg border-salon-border text-salon-text-secondary hover:text-salon-text-primary hover:border-salon-border/80"
+                                }`}
+                              >
+                                {day.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Text input with custom DD/MM/AAAA mask for other dates */}
+                        <div className="space-y-1.5">
+                          <label className="block text-[9px] font-bold uppercase tracking-wider text-salon-text-secondary/70">Ou digite outra data (DD/MM/AAAA)</label>
+                          <input
+                            type="text"
+                            placeholder="DD/MM/AAAA"
+                            maxLength={10}
+                            value={dateInputText}
+                            onChange={(e) => handleDateTextChange(e.target.value)}
+                            className="w-full px-3.5 py-3 bg-salon-bg border border-salon-border rounded-lg text-xs focus:outline-none focus:border-primary/50 text-salon-text-primary placeholder-salon-text-secondary/40 font-medium"
+                          />
+                        </div>
                       </div>
 
                       <div className="space-y-2">
