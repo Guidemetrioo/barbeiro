@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAura } from "@/context/AuraContext";
 import {
   Scissors,
@@ -27,8 +27,14 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+// Time slots constants
+const timeSlots = [
+  "08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00",
+  "17:00", "18:00", "19:00", "20:00"
+];
+
 export default function LandingPageClient() {
-  const { services, professionals, addClient, addAppointment } = useAura();
+  const { services, professionals, appointments, addClient, addAppointment } = useAura();
 
   // States
   const [clientName, setClientName] = useState("");
@@ -106,11 +112,25 @@ export default function LandingPageClient() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [bookingStep, setBookingStep] = useState(1);
 
-  // Time slots
-  const timeSlots = [
-    "08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00",
-    "17:00", "18:00", "19:00", "20:00"
-  ];
+  // Auto-select first available time slot when date or professional changes
+  useEffect(() => {
+    const availableTime = timeSlots.find(time => {
+      return !appointments.some(appt => {
+        if (appt.professional_id !== selectedProfId) return false;
+        if (appt.status === "Cancelado") return false;
+        const apptDate = new Date(appt.datetime);
+        const [year, month, day] = selectedDate.split("-").map(Number);
+        const [hour, minute] = time.split(":").map(Number);
+        const targetDate = new Date(Date.UTC(year, month - 1, day, hour, minute));
+        return apptDate.getTime() === targetDate.getTime();
+      });
+    });
+    if (availableTime) {
+      setSelectedTime(availableTime);
+    } else {
+      setSelectedTime(""); // No slots available
+    }
+  }, [selectedDate, selectedProfId, appointments]);
 
   const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,6 +138,28 @@ export default function LandingPageClient() {
 
     if (!clientName.trim() || !clientPhone.trim()) {
       setError("Por favor, informe seu nome e celular para contato.");
+      return;
+    }
+
+    if (!selectedTime) {
+      setError("Por favor, selecione um horário disponível.");
+      return;
+    }
+
+    // Double check availability to prevent race conditions
+    const [year, month, day] = selectedDate.split("-").map(Number);
+    const [hour, minute] = selectedTime.split(":").map(Number);
+    const dateObj = new Date(Date.UTC(year, month - 1, day, hour, minute));
+
+    const isSlotBooked = appointments.some((appt) => {
+      if (appt.professional_id !== selectedProfId) return false;
+      if (appt.status === "Cancelado") return false;
+      const apptDate = new Date(appt.datetime);
+      return apptDate.getTime() === dateObj.getTime();
+    });
+
+    if (isSlotBooked) {
+      setError("Este horário acabou de ser reservado por outro cliente. Por favor, escolha outro horário.");
       return;
     }
 
@@ -411,16 +453,31 @@ export default function LandingPageClient() {
                         <div className="grid grid-cols-4 gap-2 max-h-36 overflow-y-auto pr-1">
                           {timeSlots.map((time) => {
                             const isSelected = selectedTime === time;
+
+                            const isSlotBooked = appointments.some((appt) => {
+                              if (appt.professional_id !== selectedProfId) return false;
+                              if (appt.status === "Cancelado") return false;
+                              const apptDate = new Date(appt.datetime);
+                              const [year, month, day] = selectedDate.split("-").map(Number);
+                              const [hour, minute] = time.split(":").map(Number);
+                              const targetDate = new Date(Date.UTC(year, month - 1, day, hour, minute));
+                              return apptDate.getTime() === targetDate.getTime();
+                            });
+
                             return (
                               <button
                                 key={time}
                                 type="button"
+                                disabled={isSlotBooked}
                                 onClick={() => setSelectedTime(time)}
                                 className={`py-2 px-1 border rounded text-[10px] font-bold transition-all duration-200 ${
-                                  isSelected
+                                  isSlotBooked
+                                    ? "bg-salon-surface/40 border-salon-border/20 text-salon-text-secondary/35 cursor-not-allowed line-through"
+                                    : isSelected
                                     ? "bg-primary border-primary text-salon-bg"
                                     : "bg-salon-bg border-salon-border text-salon-text-secondary hover:text-salon-text-primary hover:border-salon-border/80"
                                 }`}
+                                title={isSlotBooked ? "Horário já reservado" : undefined}
                               >
                                 {time}
                               </button>
@@ -440,8 +497,9 @@ export default function LandingPageClient() {
                       </button>
                       <button
                         type="button"
+                        disabled={!selectedTime}
                         onClick={() => setBookingStep(3)}
-                        className="flex-1 py-3 bg-primary text-salon-bg font-extrabold rounded-lg text-xs uppercase tracking-wider hover:bg-primary-hover flex items-center justify-center gap-1 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,169,110,0.3)]"
+                        className="flex-1 py-3 bg-primary text-salon-bg font-extrabold rounded-lg text-xs uppercase tracking-wider hover:bg-primary-hover flex items-center justify-center gap-1 transition-all duration-300 hover:shadow-[0_0_15px_rgba(201,169,110,0.3)] disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         Próximo <ChevronRight className="w-4 h-4" />
                       </button>
