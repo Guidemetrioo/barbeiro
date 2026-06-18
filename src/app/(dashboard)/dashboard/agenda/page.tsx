@@ -106,11 +106,11 @@ export default function AgendaPage() {
       )
     : [];
 
-  const handleCreateClient = (e: React.FormEvent) => {
+  const handleCreateClient = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newClientName || !newClientPhone) return;
 
-    const newClientId = addClient({
+    const newClientId = await addClient({
       name: newClientName,
       phone: newClientPhone,
       email: newClientEmail || `${newClientName.toLowerCase().replace(/\s+/g, ".")}@example.com`,
@@ -121,16 +121,16 @@ export default function AgendaPage() {
       hair_condition: "Saudável",
     });
 
-    const newC = clients.find((c) => c.id === newClientId) || {
+    const newC = {
       id: newClientId,
       name: newClientName,
       phone: newClientPhone,
-      email: newClientEmail,
-      birthdate: "",
-      notes: "",
-      hair_type: "",
-      hair_length: "",
-      hair_condition: "",
+      email: newClientEmail || `${newClientName.toLowerCase().replace(/\s+/g, ".")}@example.com`,
+      birthdate: "1995-01-01",
+      notes: "Cliente cadastrado rapidamente pela agenda.",
+      hair_type: "Liso Fino",
+      hair_length: "Médio",
+      hair_condition: "Saudável",
       colorHistory: [],
       chemicalHistory: [],
       before_after_photos: [],
@@ -144,7 +144,7 @@ export default function AgendaPage() {
     setNewClientEmail("");
   };
 
-  const handleBook = () => {
+  const handleBook = async () => {
     if (!clientSelected || chosenServices.length === 0) return;
 
     // Convert date + time to ISO string
@@ -152,7 +152,7 @@ export default function AgendaPage() {
     const [h, m] = apptTime.split(":");
     dateObj.setUTCHours(parseInt(h), parseInt(m), 0, 0);
 
-    addAppointment({
+    await addAppointment({
       client_id: clientSelected.id,
       professional_id: targetProfId,
       datetime: dateObj.toISOString(),

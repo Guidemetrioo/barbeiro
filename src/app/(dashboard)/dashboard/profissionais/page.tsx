@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAura, Professional } from "@/context/AuraContext";
 import {
   Scissors,
@@ -24,9 +24,27 @@ export default function ProfissionaisPage() {
 
   // Form states for schedule editing
   const selectedProf = professionals.find((p) => p.id === selectedProfId) || professionals[0];
-  const [workStart, setWorkStart] = useState(selectedProf?.work_hours.start || "09:00");
-  const [workEnd, setWorkEnd] = useState(selectedProf?.work_hours.end || "19:00");
+  const [workStart, setWorkStart] = useState(selectedProf?.work_hours?.start || "09:00");
+  const [workEnd, setWorkEnd] = useState(selectedProf?.work_hours?.end || "19:00");
   const [workDays, setWorkDays] = useState<string[]>(selectedProf?.work_days || []);
+
+  useEffect(() => {
+    if (selectedProf) {
+      setWorkStart(selectedProf.work_hours.start);
+      setWorkEnd(selectedProf.work_hours.end);
+      setWorkDays(selectedProf.work_days);
+    }
+  }, [selectedProf]);
+
+  if (!selectedProf) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px] text-salon-text-secondary text-xs">
+        <div className="animate-pulse flex items-center gap-2">
+          <span>Carregando dados da equipe...</span>
+        </div>
+      </div>
+    );
+  }
 
   const handleSelectProf = (id: number) => {
     setSelectedProfId(id);

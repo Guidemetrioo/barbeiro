@@ -112,7 +112,7 @@ export default function LandingPageClient() {
     "17:00", "18:00", "19:00", "20:00"
   ];
 
-  const handleBooking = (e: React.FormEvent) => {
+  const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -123,7 +123,7 @@ export default function LandingPageClient() {
 
     try {
       // 1. Add Client
-      const newClientId = addClient({
+      const newClientId = await addClient({
         name: clientName,
         phone: clientPhone,
         email: `${clientName.toLowerCase().replace(/\s+/g, ".")}@gmail.com`,
@@ -140,7 +140,7 @@ export default function LandingPageClient() {
       const dateObj = new Date(Date.UTC(year, month - 1, day, hour, minute));
 
       // 3. Add Appointment
-      addAppointment({
+      await addAppointment({
         client_id: newClientId,
         professional_id: selectedProfId,
         datetime: dateObj.toISOString(),
