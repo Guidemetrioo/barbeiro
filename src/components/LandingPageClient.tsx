@@ -275,8 +275,19 @@ export default function LandingPageClient() {
       </header>
 
       {/* SECTION 1: HERO / BANNER PRINCIPAL */}
-      <section id="inicio" className="max-w-7xl mx-auto w-full px-6 py-12 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-        <div className="lg:col-span-7 space-y-6 md:pr-6">
+      <section id="inicio" className="max-w-7xl mx-auto w-full px-6 py-16 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 overflow-hidden lg:overflow-visible rounded-salon lg:rounded-none">
+        {/* Background Image for Mobile only */}
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center lg:hidden" 
+          style={{ 
+            backgroundImage: "url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=800')",
+            filter: "brightness(45%) contrast(105%)"
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-salon-bg via-salon-bg/85 to-salon-bg/60" />
+        </div>
+
+        <div className="lg:col-span-7 space-y-6 md:pr-6 relative z-10">
           <span className="text-[10px] bg-primary/10 border border-primary/20 text-primary px-3.5 py-1.5 rounded-full font-bold uppercase tracking-widest inline-flex items-center gap-1.5 animate-pulse">
             <Sparkles className="w-3.5 h-3.5" /> Estilo, Cerveja &amp; Navalha
           </span>
@@ -284,7 +295,7 @@ export default function LandingPageClient() {
             A Arte da Barbearia em <span className="text-primary bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">Alto Nível</span>
           </h2>
           <p className="text-salon-text-secondary text-sm md:text-base leading-relaxed max-w-xl">
-            A Aura Barber &amp; Co. combina o clássico atendimento com toalha quente e lâmina afiada 
+            A Aura Barber &amp; Co. combina o clássico atendimento com toalha quente and lâmina afiada 
             com as técnicas de visagismo mais modernas. Um refúgio premium no Itaim Bibi para homens que exigem o melhor.
           </p>
           <div className="flex flex-wrap gap-4 pt-2">
@@ -304,7 +315,7 @@ export default function LandingPageClient() {
           </div>
         </div>
 
-        <div className="lg:col-span-5 relative">
+        <div className="hidden lg:block lg:col-span-5 relative">
           <div className="absolute inset-0 bg-primary/10 rounded-salon blur-3xl transform rotate-3 scale-95 pointer-events-none" />
           <div className="border border-salon-border/80 bg-salon-surface/40 backdrop-blur-md p-2 rounded-salon relative transition-all duration-500 hover:border-primary/20 group">
             <img
