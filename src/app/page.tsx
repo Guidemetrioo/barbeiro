@@ -13,6 +13,8 @@ import {
   TrendingUp,
   MapPin,
   Sparkles,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -27,6 +29,7 @@ export default function Home() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
   const [selectedTime, setSelectedTime] = useState("10:00");
   const [isBooked, setIsBooked] = useState(false);
+  const [isServicesExpanded, setIsServicesExpanded] = useState(false);
 
   // Form errors
   const [error, setError] = useState<string | null>(null);
@@ -143,29 +146,41 @@ export default function Home() {
 
           {/* Services prices list */}
           <div className="space-y-4">
-            <div>
-              <h3 className="text-base font-bold text-salon-text-primary">Nosso Menu de Serviços</h3>
-              <p className="text-xs text-salon-text-secondary">Os melhores cuidados para o seu visual</p>
-            </div>
+            <button
+              onClick={() => setIsServicesExpanded(!isServicesExpanded)}
+              className="flex justify-between items-center w-full text-left bg-salon-surface border border-salon-border p-4 rounded-salon hover:border-primary/30 transition-all group"
+            >
+              <div>
+                <h3 className="text-sm md:text-base font-bold text-salon-text-primary flex items-center gap-2">
+                  Nosso Menu de Serviços
+                </h3>
+                <p className="text-xs text-salon-text-secondary mt-0.5">Clique para {isServicesExpanded ? "ocultar" : "visualizar"} preços e durações</p>
+              </div>
+              <div className="w-8 h-8 rounded-lg bg-salon-bg border border-salon-border flex items-center justify-center text-salon-text-secondary group-hover:text-primary transition-all">
+                {isServicesExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </div>
+            </button>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {services.map((svc) => (
-                <div
-                  key={svc.id}
-                  className="p-4 bg-salon-surface border border-salon-border rounded-salon flex justify-between items-center transition-all hover:border-salon-border/80"
-                >
-                  <div className="space-y-1">
-                    <h4 className="font-bold text-xs text-salon-text-primary">{svc.name}</h4>
-                    <span className="text-[10px] text-salon-text-secondary block">
-                      {svc.duration_minutes} min &bull; {svc.category}
+            {isServicesExpanded && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-3 duration-300">
+                {services.map((svc) => (
+                  <div
+                    key={svc.id}
+                    className="p-4 bg-salon-surface border border-salon-border rounded-salon flex justify-between items-center transition-all hover:border-primary/20"
+                  >
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-xs text-salon-text-primary">{svc.name}</h4>
+                      <span className="text-[10px] text-salon-text-secondary block">
+                        {svc.duration_minutes} min &bull; {svc.category}
+                      </span>
+                    </div>
+                    <span className="text-xs font-bold text-primary">
+                      R$ {svc.price.toFixed(2)}
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-primary">
-                    R$ {svc.price.toFixed(2)}
-                  </span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Team list */}
