@@ -165,6 +165,179 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   const [waitingList, setWaitingList] = useState<{ id: number; client_id: number; service_id: number; notes?: string }[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
+  const isSupabaseConfigured = () => {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    return !!(
+      url &&
+      url !== "https://your-project.supabase.co" &&
+      !url.includes("your-project") &&
+      key &&
+      !key.includes("placeholder")
+    );
+  };
+
+  const loadLocalMockData = () => {
+    const mockProfs = [
+      {
+        id: 1,
+        name: "Enzo (Barbeiro Master)",
+        phone: "(11) 99111-2222",
+        specialties: ["Corte Degradê", "Nevou", "Desenhos/Hair Tattoo"],
+        commission_rate: 0.45,
+        work_days: ["Ter", "Qua", "Qui", "Sex", "Sáb"],
+        work_hours: { start: "09:00", end: "19:00" },
+        appointmentsCountThisMonth: 12,
+        commissionEarnedThisMonth: 450.00
+      },
+      {
+        id: 2,
+        name: "Carol (Barbeira/Visagista)",
+        phone: "(11) 99222-3333",
+        specialties: ["Cortes Clássicos", "Selagem Capilar", "Barboterapia"],
+        commission_rate: 0.40,
+        work_days: ["Ter", "Qua", "Qui", "Sex", "Sáb"],
+        work_hours: { start: "09:00", end: "20:00" },
+        appointmentsCountThisMonth: 8,
+        commissionEarnedThisMonth: 320.00
+      },
+      {
+        id: 3,
+        name: "Marcos (Barbeiro Tradicional)",
+        phone: "(11) 99333-4444",
+        specialties: ["Corte Social", "Barba Toalha Quente", "Sobrancelha"],
+        commission_rate: 0.35,
+        work_days: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+        work_hours: { start: "08:00", end: "21:00" },
+        appointmentsCountThisMonth: 15,
+        commissionEarnedThisMonth: 280.00
+      }
+    ];
+    setProfessionals(mockProfs);
+
+    const mockServices: Service[] = [
+      { id: 1, name: "Corte Degradê", category: "Corte", price: 70.00, duration_minutes: 40 },
+      { id: 2, name: "Corte Social", category: "Corte", price: 60.00, duration_minutes: 30 },
+      { id: 3, name: "Barba Premium", category: "Barba", price: 55.00, duration_minutes: 30 },
+      { id: 4, name: "Combo Corte + Barba", category: "Corte", price: 110.00, duration_minutes: 70 },
+      { id: 5, name: "Selagem Capilar", category: "Tratamento", price: 120.00, duration_minutes: 60 },
+      { id: 6, name: "Nevou / Platinado", category: "Coloração", price: 180.00, duration_minutes: 150 },
+      { id: 7, name: "Pigmentação de Barba", category: "Coloração", price: 45.00, duration_minutes: 25 },
+      { id: 8, name: "Sobrancelha na Navalha", category: "Estética", price: 25.00, duration_minutes: 15 },
+      { id: 9, name: "Barboterapia Completa", category: "Barba", price: 80.00, duration_minutes: 45 },
+      { id: 10, name: "Massagem Capilar", category: "Tratamento", price: 40.00, duration_minutes: 20 }
+    ];
+    setServices(mockServices);
+
+    const mockProducts: Product[] = [
+      { id: 1, name: "Pomada Matte Efeito Seco 150g", category: "Finalizadores", stock_quantity: 20, min_stock: 5, expiry_date: "2027-02-15", unit_cost: 25.00 },
+      { id: 2, name: "Pó Descolorante Blond Barber 500g", category: "Coloração", stock_quantity: 8, min_stock: 4, expiry_date: "2026-07-10", unit_cost: 65.00 },
+      { id: 3, name: "Lâminas Derby Premium (Caixa)", category: "Descartáveis", stock_quantity: 12, min_stock: 10, expiry_date: "2030-01-01", unit_cost: 35.00 },
+      { id: 4, name: "Óleo para Barba Wood & Spice 30ml", category: "Finalizadores", stock_quantity: 3, min_stock: 3, expiry_date: "2027-04-20", unit_cost: 30.00 },
+      { id: 5, name: "Pigmentação Bigen Preto 6g", category: "Coloração", stock_quantity: 24, min_stock: 15, expiry_date: "2026-06-30", unit_cost: 20.00 },
+      { id: 6, name: "Loção Pós-Barba Bay Rum 100ml", category: "Finalizadores", stock_quantity: 4, min_stock: 5, expiry_date: "2028-10-12", unit_cost: 45.00 }
+    ];
+    setProducts(mockProducts);
+
+    const mockClients: Client[] = [
+      {
+        id: 1,
+        name: "Bruno Souza",
+        phone: "(11) 98765-4321",
+        email: "bruno.souza@gmail.com",
+        birthdate: "1994-06-17",
+        notes: "Prefere café expresso. Gosta de risco na sobrancelha.",
+        hair_type: "Cabelo Ondulado (2A)",
+        hair_length: "Curto (Degradê)",
+        hair_condition: "Saudável, couro cabeludo oleoso",
+        colorHistory: [
+          { id: 101, client_id: 1, date: "2026-03-10", brand: "Bigen", number: "Preto 101", oxidant: "Água", ratio: "1:1", pause_time: "15 min", notes: "Pigmentação perfeita para alinhar barba." }
+        ],
+        chemicalHistory: [
+          { id: 201, client_id: 1, date: "2025-11-15", procedure: "Selagem Masculina", product: "Liss Barber", result: "Fios disciplinados e macios." }
+        ],
+        before_after_photos: [
+          { id: 301, date: "2026-03-10", before: "https://images.unsplash.com/photo-1562322140-8baeececf3df?q=80&w=400", after: "https://images.unsplash.com/photo-1595959183075-c1d09e77b64d?q=80&w=400" }
+        ]
+      },
+      {
+        id: 2,
+        name: "Carlos Eduardo Santos",
+        phone: "(11) 97654-3210",
+        email: "cadu.santos@outlook.com",
+        birthdate: "1988-10-05",
+        notes: "Sempre corta degrade na navalha. Usa pomada matte.",
+        hair_type: "Grosso Crespo",
+        hair_length: "Curto",
+        hair_condition: "Normal",
+        colorHistory: [],
+        chemicalHistory: [],
+        before_after_photos: []
+      },
+      {
+        id: 3,
+        name: "Thiago Lima",
+        phone: "(11) 96543-2109",
+        email: "thiago.lima@yahoo.com.br",
+        birthdate: "1992-06-25",
+        notes: "Fazer teste de mecha sempre antes de descolorir.",
+        hair_type: "Liso Grosso",
+        hair_length: "Médio",
+        hair_condition: "Danificado por descoloração antiga",
+        colorHistory: [
+          { id: 102, client_id: 3, date: "2026-04-12", brand: "Blond Barber", number: "10.11", oxidant: "30 vol", ratio: "1:2", pause_time: "50 min", notes: "Luzes platinadas efeito nevou." }
+        ],
+        chemicalHistory: [
+          { id: 202, client_id: 3, date: "2026-04-12", procedure: "Platinado Global", product: "Blond Pro", result: "Tom platinado sem quebra de fibra." }
+        ],
+        before_after_photos: []
+      }
+    ];
+    setClients(mockClients);
+
+    const mockAppts: Appointment[] = [
+      {
+        id: 1,
+        client_id: 1,
+        professional_id: 1,
+        datetime: getTodayISO("10:00"),
+        status: "Concluído",
+        services: [1, 8],
+        products: [{ id: 3, qty: 1 }],
+        notes: "Gosta de risco na sobrancelha."
+      },
+      {
+        id: 2,
+        client_id: 2,
+        professional_id: 3,
+        datetime: getTodayISO("14:00"),
+        status: "Confirmado",
+        services: [1, 3],
+        products: [{ id: 3, qty: 1 }],
+        notes: "Gosta de corte degrade navalhado."
+      }
+    ];
+    setAppointments(mockAppts);
+
+    const mockFinances: FinancialEntry[] = [
+      { id: 1, type: "Entrada", category: "Serviço", amount: 95.00, description: "Atendimento Concluído - Bruno Souza", date: new Date().toISOString(), payment_method: "Pix", net_amount: 95.00 }
+    ];
+    setFinancialEntries(mockFinances);
+
+    const mockTasks: Task[] = [
+      { id: 1, title: "Organizar armário de químicos", description: "Verificar validades e agrupar por numeração.", status: "A fazer", priority: "média", due_date: "Hoje, 19:00", assigned_to: "Carol" }
+    ];
+    setTasks(mockTasks);
+
+    const mockWaitingList: { id: number; client_id: number; service_id: number; notes?: string }[] = [];
+    setWaitingList(mockWaitingList);
+
+    const mockNotifs = [
+      { id: 1, type: "sistema" as const, message: "Sistema Aura iniciado no modo de demonstração local. Conecte ao Supabase para produção.", read: false, created_at: new Date().toISOString() }
+    ];
+    setNotifications(mockNotifs);
+  };
+
   // Helper date generator for today's date
   const getTodayISO = (hourStr: string) => {
     const today = new Date();
@@ -413,6 +586,10 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   };
 
   const fetchAllData = async () => {
+    if (!isSupabaseConfigured()) {
+      loadLocalMockData();
+      return;
+    }
     try {
       await seedDatabase();
 
@@ -493,6 +670,23 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
 
   // Action implementations
   const addAppointment = async (appt: Omit<Appointment, "id">) => {
+    if (!isSupabaseConfigured()) {
+      const newId = appointments.length > 0 ? Math.max(...appointments.map(a => a.id)) + 1 : 1;
+      const newAppt = { id: newId, ...appt };
+      setAppointments(prev => [newAppt, ...prev]);
+
+      const client = clients.find(c => c.id === appt.client_id);
+      const professional = professionals.find(p => p.id === appt.professional_id);
+      const newNotif = {
+        id: notifications.length > 0 ? Math.max(...notifications.map(n => n.id)) + 1 : 1,
+        type: "agendamento" as const,
+        message: `Novo agendamento: ${client?.name || "Cliente"} com ${professional?.name || "Profissional"}.`,
+        read: false,
+        created_at: new Date().toISOString()
+      };
+      setNotifications(prev => [newNotif, ...prev]);
+      return;
+    }
     const { data, error } = await supabase.from("appointments").insert({
       client_id: appt.client_id,
       professional_id: appt.professional_id,
@@ -530,6 +724,81 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   ) => {
     const appt = appointments.find(a => a.id === id);
     if (!appt) return;
+
+    if (!isSupabaseConfigured()) {
+      setAppointments(prev => prev.map(a => (a.id === id ? { ...a, status } : a)));
+
+      if (status === "Concluído" && appt.status !== "Concluído") {
+        let totalPrice = appt.price_override || 0;
+        if (totalPrice === 0) {
+          appt.services.forEach(svcId => {
+            const svc = services.find(s => s.id === svcId);
+            if (svc) totalPrice += svc.price;
+          });
+        }
+
+        const client = clients.find(c => c.id === appt.client_id);
+        const payment = paymentMethod || "Pix";
+        let machineFee = 0;
+        if (payment === "Crédito") machineFee = totalPrice * 0.03;
+        if (payment === "Débito") machineFee = totalPrice * 0.015;
+        const net = totalPrice - machineFee;
+
+        const newEntry = {
+          id: financialEntries.length > 0 ? Math.max(...financialEntries.map(f => f.id)) + 1 : 1,
+          type: "Entrada" as const,
+          category: "Serviço" as const,
+          amount: totalPrice,
+          description: `Atendimento Concluído - ${client?.name || "Cliente"}`,
+          date: new Date().toISOString(),
+          payment_method: payment,
+          net_amount: parseFloat(net.toFixed(2)),
+          appointment_id: id
+        };
+
+        setFinancialEntries(prevFin => [newEntry, ...prevFin]);
+
+        const professional = professionals.find(p => p.id === appt.professional_id);
+        if (professional) {
+          let totalCommission = 0;
+          appt.services.forEach(svcId => {
+            const svc = services.find(s => s.id === svcId);
+            if (svc) {
+              const rate = svc.commission_rate || professional.commission_rate;
+              totalCommission += svc.price * rate;
+            }
+          });
+
+          // Update professional locally
+          setProfessionals(prevProfs => prevProfs.map(p => {
+            if (p.id !== professional.id) return p;
+            return {
+              ...p,
+              appointmentsCountThisMonth: p.appointmentsCountThisMonth + 1,
+              commissionEarnedThisMonth: p.commissionEarnedThisMonth + totalCommission
+            };
+          }));
+
+          const newNotif = {
+            id: notifications.length > 0 ? Math.max(...notifications.map(n => n.id)) + 1 : 1,
+            type: "comissao" as const,
+            message: `Comissão calculada: +R$ ${totalCommission.toFixed(2)} para ${professional.name}.`,
+            read: false,
+            created_at: new Date().toISOString()
+          };
+          setNotifications(prevNotifs => [newNotif, ...prevNotifs]);
+        }
+
+        appt.products.forEach((pUse) => {
+          const prod = products.find(p => p.id === pUse.id);
+          if (prod) {
+            const newQty = Math.max(0, prod.stock_quantity - pUse.qty);
+            setProducts(prevProducts => prevProducts.map(p => (p.id === pUse.id ? { ...p, stock_quantity: newQty } : p)));
+          }
+        });
+      }
+      return;
+    }
 
     const { data, error } = await supabase
       .from("appointments")
@@ -626,6 +895,27 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addClient = async (client: Omit<Client, "id" | "colorHistory" | "chemicalHistory" | "before_after_photos">) => {
+    if (!isSupabaseConfigured()) {
+      const newId = clients.length > 0 ? Math.max(...clients.map(c => c.id)) + 1 : 1;
+      const mappedClient: Client = {
+        id: newId,
+        name: client.name,
+        phone: client.phone,
+        email: client.email || "",
+        birthdate: client.birthdate || "",
+        notes: client.notes || "",
+        hair_type: client.hair_type || "Não especificado",
+        hair_length: client.hair_length || "Não especificado",
+        hair_condition: client.hair_condition || "Não especificado",
+        avatar_url: client.avatar_url,
+        colorHistory: [],
+        chemicalHistory: [],
+        before_after_photos: []
+      };
+      setClients(prev => [...prev, mappedClient]);
+      return newId;
+    }
+
     const { data, error } = await supabase.from("clients").insert({
       name: client.name,
       phone: client.phone,
@@ -664,6 +954,21 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateClientHair = async (id: number, data: Partial<Pick<Client, "hair_type" | "hair_length" | "hair_condition" | "notes">>) => {
+    if (!isSupabaseConfigured()) {
+      setClients(prev =>
+        prev.map(c => {
+          if (c.id !== id) return c;
+          return {
+            ...c,
+            hair_type: data.hair_type !== undefined ? data.hair_type : c.hair_type,
+            hair_length: data.hair_length !== undefined ? data.hair_length : c.hair_length,
+            hair_condition: data.hair_condition !== undefined ? data.hair_condition : c.hair_condition,
+            notes: data.notes !== undefined ? data.notes : c.notes
+          };
+        })
+      );
+      return;
+    }
     const { data: dbClient, error } = await supabase
       .from("clients")
       .update({
@@ -695,6 +1000,18 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
     const c = clients.find(cl => cl.id === client_id);
     if (!c) return;
 
+    if (!isSupabaseConfigured()) {
+      const newId = c.chemicalHistory.length > 0 ? Math.max(...c.chemicalHistory.map(ch => ch.id)) + 1 : 201;
+      const newRecord: ChemRecord = { id: newId, client_id, date: record.date, procedure: record.procedure, product: record.product, result: record.result };
+      setClients(prev =>
+        prev.map(cl => {
+          if (cl.id !== client_id) return cl;
+          return { ...cl, chemicalHistory: [newRecord, ...cl.chemicalHistory] };
+        })
+      );
+      return;
+    }
+
     const newId = c.chemicalHistory.length > 0 ? Math.max(...c.chemicalHistory.map(ch => ch.id)) + 1 : 201;
     const newRecord = { id: newId, date: record.date, procedure: record.procedure, product: record.product, result: record.result };
     const updatedHistory = [newRecord, ...c.chemicalHistory];
@@ -718,6 +1035,18 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   const addColorHistory = async (client_id: number, record: Omit<ColorRecord, "id" | "client_id">) => {
     const c = clients.find(cl => cl.id === client_id);
     if (!c) return;
+
+    if (!isSupabaseConfigured()) {
+      const newId = c.colorHistory.length > 0 ? Math.max(...c.colorHistory.map(co => co.id)) + 1 : 101;
+      const newRecord: ColorRecord = { id: newId, client_id, date: record.date, brand: record.brand, number: record.number, oxidant: record.oxidant, ratio: record.ratio, pause_time: record.pause_time, notes: record.notes };
+      setClients(prev =>
+        prev.map(cl => {
+          if (cl.id !== client_id) return cl;
+          return { ...cl, colorHistory: [newRecord, ...cl.colorHistory] };
+        })
+      );
+      return;
+    }
 
     const newId = c.colorHistory.length > 0 ? Math.max(...c.colorHistory.map(co => co.id)) + 1 : 101;
     const newRecord = { id: newId, date: record.date, brand: record.brand, number: record.number, oxidant: record.oxidant, ratio: record.ratio, pause_time: record.pause_time, notes: record.notes };
@@ -743,6 +1072,18 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
     const c = clients.find(cl => cl.id === client_id);
     if (!c) return;
 
+    if (!isSupabaseConfigured()) {
+      const newId = c.before_after_photos.length > 0 ? Math.max(...c.before_after_photos.map(p => p.id)) + 1 : 301;
+      const newPhoto = { id: newId, date: new Date().toISOString().split("T")[0], before, after };
+      setClients(prev =>
+        prev.map(cl => {
+          if (cl.id !== client_id) return cl;
+          return { ...cl, before_after_photos: [newPhoto, ...cl.before_after_photos] };
+        })
+      );
+      return;
+    }
+
     const newId = c.before_after_photos.length > 0 ? Math.max(...c.before_after_photos.map(p => p.id)) + 1 : 301;
     const newPhoto = { id: newId, date: new Date().toISOString().split("T")[0], before, after };
     const updatedHistory = [newPhoto, ...c.before_after_photos];
@@ -764,6 +1105,12 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addTransaction = async (entry: Omit<FinancialEntry, "id">) => {
+    if (!isSupabaseConfigured()) {
+      const newId = financialEntries.length > 0 ? Math.max(...financialEntries.map(f => f.id)) + 1 : 1;
+      const newEntry = { id: newId, ...entry, net_amount: entry.net_amount || entry.amount };
+      setFinancialEntries(prev => [newEntry, ...prev]);
+      return;
+    }
     const { data, error } = await supabase.from("financial_entries").insert({
       type: entry.type,
       category: entry.category,
@@ -781,6 +1128,10 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   };
 
   const moveTask = async (id: number, newStatus: Task["status"]) => {
+    if (!isSupabaseConfigured()) {
+      setTasks(prev => prev.map(t => (t.id === id ? { ...t, status: newStatus } : t)));
+      return;
+    }
     const { data, error } = await supabase
       .from("tasks")
       .update({ status: newStatus })
@@ -793,6 +1144,11 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addTask = async (task: Omit<Task, "id">) => {
+    if (!isSupabaseConfigured()) {
+      const newId = tasks.length > 0 ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
+      setTasks(prev => [...prev, { id: newId, ...task }]);
+      return;
+    }
     const { data, error } = await supabase.from("tasks").insert({
       title: task.title,
       description: task.description,
@@ -808,6 +1164,11 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addWaitingList = async (item: Omit<{ id: number; client_id: number; service_id: number; notes?: string }, "id">) => {
+    if (!isSupabaseConfigured()) {
+      const newId = waitingList.length > 0 ? Math.max(...waitingList.map(w => w.id)) + 1 : 1;
+      setWaitingList(prev => [...prev, { id: newId, ...item }]);
+      return;
+    }
     const { data, error } = await supabase.from("waiting_list").insert({
       client_id: item.client_id,
       service_id: item.service_id,
@@ -820,6 +1181,10 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   };
 
   const removeFromWaitingList = async (id: number) => {
+    if (!isSupabaseConfigured()) {
+      setWaitingList(prev => prev.filter(w => w.id !== id));
+      return;
+    }
     const { error } = await supabase.from("waiting_list").delete().eq("id", id);
     if (!error) {
       setWaitingList(prev => prev.filter(w => w.id !== id));
@@ -827,6 +1192,10 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   };
 
   const markNotificationRead = async (id: number) => {
+    if (!isSupabaseConfigured()) {
+      setNotifications(prev => prev.map(n => (n.id === id ? { ...n, read: true } : n)));
+      return;
+    }
     const { data, error } = await supabase
       .from("notifications")
       .update({ read: true })
@@ -839,6 +1208,10 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   };
 
   const markAllNotificationsRead = async () => {
+    if (!isSupabaseConfigured()) {
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      return;
+    }
     const { error } = await supabase
       .from("notifications")
       .update({ read: true })
@@ -850,6 +1223,11 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addService = async (service: Omit<Service, "id">) => {
+    if (!isSupabaseConfigured()) {
+      const newId = services.length > 0 ? Math.max(...services.map(s => s.id)) + 1 : 1;
+      setServices(prev => [...prev, { id: newId, ...service }]);
+      return;
+    }
     const { data, error } = await supabase.from("services").insert(service).select();
     if (data && data[0]) {
       setServices(prev => [...prev, data[0]]);
@@ -857,6 +1235,10 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateService = async (id: number, service: Partial<Service>) => {
+    if (!isSupabaseConfigured()) {
+      setServices(prev => prev.map(s => (s.id === id ? { ...s, ...service } : s)));
+      return;
+    }
     const { data, error } = await supabase
       .from("services")
       .update(service)
@@ -869,6 +1251,11 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addProduct = async (product: Omit<Product, "id">) => {
+    if (!isSupabaseConfigured()) {
+      const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+      setProducts(prev => [...prev, { id: newId, ...product }]);
+      return;
+    }
     const { data, error } = await supabase.from("products").insert(product).select();
     if (data && data[0]) {
       setProducts(prev => [...prev, data[0]]);
@@ -879,6 +1266,11 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
     const prod = products.find(p => p.id === id);
     if (!prod) return;
 
+    if (!isSupabaseConfigured()) {
+      const newQty = Math.max(0, prod.stock_quantity + change);
+      setProducts(prev => prev.map(p => (p.id === id ? { ...p, stock_quantity: newQty } : p)));
+      return;
+    }
     const newQty = Math.max(0, prod.stock_quantity + change);
     const { data, error } = await supabase
       .from("products")
@@ -892,6 +1284,10 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateProfessional = async (id: number, data: Partial<Professional>) => {
+    if (!isSupabaseConfigured()) {
+      setProfessionals(prev => prev.map(p => (p.id === id ? { ...p, ...data } : p)));
+      return;
+    }
     const { data: dbProf, error } = await supabase
       .from("professionals")
       .update(data)
