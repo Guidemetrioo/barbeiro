@@ -225,228 +225,6 @@ export default function LandingPageClient() {
         </div>
       </section>
 
-      {/* SECTION 2: DIFERENCIAIS DA MARCA */}
-      <section className="border-y border-salon-border bg-salon-surface/20 py-12 relative z-10">
-        <div className="max-w-7xl mx-auto w-full px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          
-          <div className="flex gap-4 p-2 rounded-lg hover:bg-salon-surface/30 transition-colors duration-300">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
-              <Compass className="w-6 h-6" />
-            </div>
-            <div className="space-y-1">
-              <h4 className="font-bold text-xs text-salon-text-primary uppercase tracking-wide">Corte Visagista</h4>
-              <p className="text-[11px] text-salon-text-secondary leading-relaxed">Cortes planejados sob medida para o formato do seu rosto e estilo.</p>
-            </div>
-          </div>
-
-          <div className="flex gap-4 p-2 rounded-lg hover:bg-salon-surface/30 transition-colors duration-300">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
-              <Coffee className="w-6 h-6" />
-            </div>
-            <div className="space-y-1">
-              <h4 className="font-bold text-xs text-salon-text-primary uppercase tracking-wide">Cerveja &amp; Café Cortesia</h4>
-              <p className="text-[11px] text-salon-text-secondary leading-relaxed">Aprecie um espresso especial ou cerveja artesanal trincando de gelada.</p>
-            </div>
-          </div>
-
-          <div className="flex gap-4 p-2 rounded-lg hover:bg-salon-surface/30 transition-colors duration-300">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <div className="space-y-1">
-              <h4 className="font-bold text-xs text-salon-text-primary uppercase tracking-wide">Higiene Estrita</h4>
-              <p className="text-[11px] text-salon-text-secondary leading-relaxed">Materiais esterilizados em autoclave e descartáveis individuais.</p>
-            </div>
-          </div>
-
-          <div className="flex gap-4 p-2 rounded-lg hover:bg-salon-surface/30 transition-colors duration-300">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
-              <Award className="w-6 h-6" />
-            </div>
-            <div className="space-y-1">
-              <h4 className="font-bold text-xs text-salon-text-primary uppercase tracking-wide">Pontualidade Britânica</h4>
-              <p className="text-[11px] text-salon-text-secondary leading-relaxed">Seu tempo é sagrado. Garantimos atendimento rigoroso no horário.</p>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* SECTION 3: MENU DE SERVIÇOS RETRÁTIL */}
-      <section id="servicos" className="max-w-7xl mx-auto w-full px-6 py-16 space-y-8 relative z-10">
-        <div className="text-center max-w-xl mx-auto space-y-2">
-          <span className="text-[10px] uppercase tracking-widest text-primary font-extrabold bg-primary/10 px-3 py-1 rounded-full">Catálogo</span>
-          <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-salon-text-primary">Serviços Executados por Especialistas</h3>
-          <p className="text-xs text-salon-text-secondary">Selecione o serviço ideal e inicie seu agendamento instantâneo com um clique.</p>
-        </div>
-
-        <div className="max-w-3xl mx-auto space-y-4">
-          <button
-            onClick={() => setIsServicesExpanded(!isServicesExpanded)}
-            className="flex justify-between items-center w-full text-left bg-salon-surface/60 backdrop-blur-sm border border-salon-border/80 p-5 rounded-salon hover:border-primary/40 transition-all duration-300 group"
-          >
-            <div>
-              <h4 className="text-xs font-extrabold text-salon-text-primary uppercase tracking-wider flex items-center gap-2.5">
-                <Scissors className="w-4.5 h-4.5 text-primary" /> Visualizar Menu Completo de Serviços
-              </h4>
-              <p className="text-[11px] text-salon-text-secondary mt-1">Clique para expandir valores e tempo estimado de cada procedimento.</p>
-            </div>
-            <div className="w-10 h-10 rounded-lg bg-salon-bg border border-salon-border flex items-center justify-center text-salon-text-secondary group-hover:text-primary group-hover:border-primary/30 transition-all duration-300">
-              {isServicesExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-            </div>
-          </button>
-
-          {isServicesExpanded && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
-              {services.map((svc) => (
-                <div
-                  key={svc.id}
-                  className="p-5 bg-salon-surface border border-salon-border rounded-salon flex justify-between items-center transition-all duration-300 hover:border-primary/20 hover:bg-salon-surface/60 group"
-                >
-                  <div className="space-y-1.5">
-                    <h5 className="font-bold text-xs text-salon-text-primary group-hover:text-primary transition-colors">{svc.name}</h5>
-                    <span className="text-[10px] text-salon-text-secondary block">
-                      {svc.duration_minutes} min &bull; Categoria: {svc.category}
-                    </span>
-                    <button
-                      onClick={() => handleSelectServiceAndScroll(svc.id)}
-                      className="text-[9px] font-bold text-primary hover:text-primary-light uppercase tracking-wider flex items-center gap-0.5 mt-1 underline"
-                    >
-                      Agendar este <ChevronRight className="w-3 h-3" />
-                    </button>
-                  </div>
-                  <div className="text-right space-y-1">
-                    <span className="text-xs font-bold text-primary block">
-                      R$ {svc.price.toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* SECTION 4: APRESENTAÇÃO DOS BARBEIROS */}
-      <section id="profissionais" className="border-t border-salon-border bg-salon-surface/10 py-16 relative z-10">
-        <div className="max-w-7xl mx-auto w-full px-6 space-y-10">
-          <div className="text-center max-w-xl mx-auto space-y-2">
-            <span className="text-[10px] uppercase tracking-widest text-primary font-extrabold bg-primary/10 px-3 py-1 rounded-full">Os Artistas</span>
-            <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-salon-text-primary">Equipe de Barbeiros &amp; Visagistas</h3>
-            <p className="text-xs text-salon-text-secondary">Profissionais altamente treinados e atualizados com as últimas tendências mundiais.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            
-            {/* Barber 1 */}
-            <div className="bg-salon-surface/80 backdrop-blur-sm border border-salon-border rounded-salon overflow-hidden flex flex-col group hover:border-primary/30 hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition-all duration-500">
-              <div className="overflow-hidden relative h-64">
-                <img
-                  src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?q=80&w=400"
-                  alt="Barbeiro Enzo - especialista em Degradê e platinado"
-                  className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                />
-              </div>
-              <div className="p-6 space-y-3">
-                <div className="flex justify-between items-center">
-                  <h4 className="font-extrabold text-sm text-salon-text-primary">Enzo</h4>
-                  <span className="text-[8px] bg-primary/10 border border-primary/20 text-primary px-2.5 py-0.5 rounded font-extrabold uppercase tracking-wider">Master</span>
-                </div>
-                <p className="text-[11px] text-salon-text-secondary leading-relaxed">Especialista em degradê navalhado, freestyle hair art e descolorações globais platinadas.</p>
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  <span className="text-[9px] bg-salon-bg border border-salon-border text-salon-text-secondary px-2.5 py-0.5 rounded font-medium">Corte Degradê</span>
-                  <span className="text-[9px] bg-salon-bg border border-salon-border text-salon-text-secondary px-2.5 py-0.5 rounded font-medium">Platinados</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Barber 2 */}
-            <div className="bg-salon-surface/80 backdrop-blur-sm border border-salon-border rounded-salon overflow-hidden flex flex-col group hover:border-primary/30 hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition-all duration-500">
-              <div className="overflow-hidden relative h-64">
-                <img
-                  src="https://images.unsplash.com/photo-1596075780750-846441ecb66a?q=80&w=400"
-                  alt="Barbeira Carol - especialista em cortes clássicos e visagismo"
-                  className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                />
-              </div>
-              <div className="p-6 space-y-3">
-                <div className="flex justify-between items-center">
-                  <h4 className="font-extrabold text-sm text-salon-text-primary">Carol</h4>
-                  <span className="text-[8px] bg-primary/10 border border-primary/20 text-primary px-2.5 py-0.5 rounded font-extrabold uppercase tracking-wider">Visagista</span>
-                </div>
-                <p className="text-[11px] text-salon-text-secondary leading-relaxed">Formada em estética e visagismo capilar. Especializada em alinhamento de barba e terapia capilar.</p>
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  <span className="text-[9px] bg-salon-bg border border-salon-border text-salon-text-secondary px-2.5 py-0.5 rounded font-medium">Visagismo</span>
-                  <span className="text-[9px] bg-salon-bg border border-salon-border text-salon-text-secondary px-2.5 py-0.5 rounded font-medium">Barboterapia</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Barber 3 */}
-            <div className="bg-salon-surface/80 backdrop-blur-sm border border-salon-border rounded-salon overflow-hidden flex flex-col group hover:border-primary/30 hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition-all duration-500">
-              <div className="overflow-hidden relative h-64">
-                <img
-                  src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=400"
-                  alt="Barbeiro Marcos - especialista em cortes sociais e barba clássica"
-                  className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                />
-              </div>
-              <div className="p-6 space-y-3">
-                <div className="flex justify-between items-center">
-                  <h4 className="font-extrabold text-sm text-salon-text-primary">Marcos</h4>
-                  <span className="text-[8px] bg-primary/10 border border-primary/20 text-primary px-2.5 py-0.5 rounded font-extrabold uppercase tracking-wider">Tradicional</span>
-                </div>
-                <p className="text-[11px] text-salon-text-secondary leading-relaxed">Especialista em tesoura fina clássica, barba clássica com toalha quente e massagem facial.</p>
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  <span className="text-[9px] bg-salon-bg border border-salon-border text-salon-text-secondary px-2.5 py-0.5 rounded font-medium">Social Tesoura</span>
-                  <span className="text-[9px] bg-salon-bg border border-salon-border text-salon-text-secondary px-2.5 py-0.5 rounded font-medium">Toalha Quente</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* SECTION 5: INSTITUCIONAL / QUEM SOMOS */}
-      <section id="sobre" className="max-w-7xl mx-auto w-full px-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-        <div className="border border-salon-border/80 bg-salon-surface p-2 rounded-salon relative group hover:border-primary/25 transition-all duration-500">
-          <img
-            src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=800"
-            alt="Processo de barboterapia de luxo na Aura Barber"
-            className="w-full h-72 md:h-96 object-cover rounded-lg filter grayscale group-hover:grayscale-0 transition-all duration-750"
-          />
-        </div>
-
-        <div className="space-y-6">
-          <span className="text-[10px] uppercase tracking-widest text-primary font-extrabold bg-primary/10 px-3 py-1 rounded-full">Nossa Tradição</span>
-          <h3 className="text-2xl md:text-3xl font-extrabold text-salon-text-primary">Onde o Cuidado Masculino Se Torna Arte</h3>
-          <p className="text-salon-text-secondary text-xs md:text-sm leading-relaxed">
-            Fundada em 2024 no coração do Itaim Bibi, a **Aura Barber &amp; Co.** nasceu com o propósito de que a barbearia 
-            deve ser um momento de pausa, descompressão e reconexão. Nossas confortáveis cadeiras clássicas de couro 
-            e o projeto de iluminação personalizado garantem que cada corte e barba sejam executados com máxima precisão.
-          </p>
-          <div className="grid grid-cols-2 gap-4 text-xs font-bold pt-2">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-primary shrink-0" />
-              <span>Cafeteria Exclusiva</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-primary shrink-0" />
-              <span>Ambiente Climatizado</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-primary shrink-0" />
-              <span>Wi-Fi de Alta Velocidade</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-primary shrink-0" />
-              <span>Manobrista no Local</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* SECTION 6: WIDGET DE AGENDAMENTO DINÂMICO (PASSOS) */}
       <section id="agendar" className="border-t border-salon-border bg-salon-surface/20 py-16 relative z-10">
         <div className="max-w-xl mx-auto px-6">
@@ -704,6 +482,228 @@ export default function LandingPageClient() {
               </div>
             )}
 
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 2: DIFERENCIAIS DA MARCA */}
+      <section className="border-y border-salon-border bg-salon-surface/20 py-12 relative z-10">
+        <div className="max-w-7xl mx-auto w-full px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          
+          <div className="flex gap-4 p-2 rounded-lg hover:bg-salon-surface/30 transition-colors duration-300">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+              <Compass className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h4 className="font-bold text-xs text-salon-text-primary uppercase tracking-wide">Corte Visagista</h4>
+              <p className="text-[11px] text-salon-text-secondary leading-relaxed">Cortes planejados sob medida para o formato do seu rosto e estilo.</p>
+            </div>
+          </div>
+
+          <div className="flex gap-4 p-2 rounded-lg hover:bg-salon-surface/30 transition-colors duration-300">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+              <Coffee className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h4 className="font-bold text-xs text-salon-text-primary uppercase tracking-wide">Cerveja &amp; Café Cortesia</h4>
+              <p className="text-[11px] text-salon-text-secondary leading-relaxed">Aprecie um espresso especial ou cerveja artesanal trincando de gelada.</p>
+            </div>
+          </div>
+
+          <div className="flex gap-4 p-2 rounded-lg hover:bg-salon-surface/30 transition-colors duration-300">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h4 className="font-bold text-xs text-salon-text-primary uppercase tracking-wide">Higiene Estrita</h4>
+              <p className="text-[11px] text-salon-text-secondary leading-relaxed">Materiais esterilizados em autoclave e descartáveis individuais.</p>
+            </div>
+          </div>
+
+          <div className="flex gap-4 p-2 rounded-lg hover:bg-salon-surface/30 transition-colors duration-300">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+              <Award className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h4 className="font-bold text-xs text-salon-text-primary uppercase tracking-wide">Pontualidade Britânica</h4>
+              <p className="text-[11px] text-salon-text-secondary leading-relaxed">Seu tempo é sagrado. Garantimos atendimento rigoroso no horário.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* SECTION 3: MENU DE SERVIÇOS RETRÁTIL */}
+      <section id="servicos" className="max-w-7xl mx-auto w-full px-6 py-16 space-y-8 relative z-10">
+        <div className="text-center max-w-xl mx-auto space-y-2">
+          <span className="text-[10px] uppercase tracking-widest text-primary font-extrabold bg-primary/10 px-3 py-1 rounded-full">Catálogo</span>
+          <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-salon-text-primary">Serviços Executados por Especialistas</h3>
+          <p className="text-xs text-salon-text-secondary">Selecione o serviço ideal e inicie seu agendamento instantâneo com um clique.</p>
+        </div>
+
+        <div className="max-w-3xl mx-auto space-y-4">
+          <button
+            onClick={() => setIsServicesExpanded(!isServicesExpanded)}
+            className="flex justify-between items-center w-full text-left bg-salon-surface/60 backdrop-blur-sm border border-salon-border/80 p-5 rounded-salon hover:border-primary/40 transition-all duration-300 group"
+          >
+            <div>
+              <h4 className="text-xs font-extrabold text-salon-text-primary uppercase tracking-wider flex items-center gap-2.5">
+                <Scissors className="w-4.5 h-4.5 text-primary" /> Visualizar Menu Completo de Serviços
+              </h4>
+              <p className="text-[11px] text-salon-text-secondary mt-1">Clique para expandir valores e tempo estimado de cada procedimento.</p>
+            </div>
+            <div className="w-10 h-10 rounded-lg bg-salon-bg border border-salon-border flex items-center justify-center text-salon-text-secondary group-hover:text-primary group-hover:border-primary/30 transition-all duration-300">
+              {isServicesExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </div>
+          </button>
+
+          {isServicesExpanded && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+              {services.map((svc) => (
+                <div
+                  key={svc.id}
+                  className="p-5 bg-salon-surface border border-salon-border rounded-salon flex justify-between items-center transition-all duration-300 hover:border-primary/20 hover:bg-salon-surface/60 group"
+                >
+                  <div className="space-y-1.5">
+                    <h5 className="font-bold text-xs text-salon-text-primary group-hover:text-primary transition-colors">{svc.name}</h5>
+                    <span className="text-[10px] text-salon-text-secondary block">
+                      {svc.duration_minutes} min &bull; Categoria: {svc.category}
+                    </span>
+                    <button
+                      onClick={() => handleSelectServiceAndScroll(svc.id)}
+                      className="text-[9px] font-bold text-primary hover:text-primary-light uppercase tracking-wider flex items-center gap-0.5 mt-1 underline"
+                    >
+                      Agendar este <ChevronRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                  <div className="text-right space-y-1">
+                    <span className="text-xs font-bold text-primary block">
+                      R$ {svc.price.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* SECTION 4: APRESENTAÇÃO DOS BARBEIROS */}
+      <section id="profissionais" className="border-t border-salon-border bg-salon-surface/10 py-16 relative z-10">
+        <div className="max-w-7xl mx-auto w-full px-6 space-y-10">
+          <div className="text-center max-w-xl mx-auto space-y-2">
+            <span className="text-[10px] uppercase tracking-widest text-primary font-extrabold bg-primary/10 px-3 py-1 rounded-full">Os Artistas</span>
+            <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-salon-text-primary">Equipe de Barbeiros &amp; Visagistas</h3>
+            <p className="text-xs text-salon-text-secondary">Profissionais altamente treinados e atualizados com as últimas tendências mundiais.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            
+            {/* Barber 1 */}
+            <div className="bg-salon-surface/80 backdrop-blur-sm border border-salon-border rounded-salon overflow-hidden flex flex-col group hover:border-primary/30 hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition-all duration-500">
+              <div className="overflow-hidden relative h-64">
+                <img
+                  src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?q=80&w=400"
+                  alt="Barbeiro Enzo - especialista em Degradê e platinado"
+                  className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                />
+              </div>
+              <div className="p-6 space-y-3">
+                <div className="flex justify-between items-center">
+                  <h4 className="font-extrabold text-sm text-salon-text-primary">Enzo</h4>
+                  <span className="text-[8px] bg-primary/10 border border-primary/20 text-primary px-2.5 py-0.5 rounded font-extrabold uppercase tracking-wider">Master</span>
+                </div>
+                <p className="text-[11px] text-salon-text-secondary leading-relaxed">Especialista em degradê navalhado, freestyle hair art e descolorações globais platinadas.</p>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  <span className="text-[9px] bg-salon-bg border border-salon-border text-salon-text-secondary px-2.5 py-0.5 rounded font-medium">Corte Degradê</span>
+                  <span className="text-[9px] bg-salon-bg border border-salon-border text-salon-text-secondary px-2.5 py-0.5 rounded font-medium">Platinados</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Barber 2 */}
+            <div className="bg-salon-surface/80 backdrop-blur-sm border border-salon-border rounded-salon overflow-hidden flex flex-col group hover:border-primary/30 hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition-all duration-500">
+              <div className="overflow-hidden relative h-64">
+                <img
+                  src="https://images.unsplash.com/photo-1596075780750-846441ecb66a?q=80&w=400"
+                  alt="Barbeira Carol - especialista em cortes clássicos e visagismo"
+                  className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                />
+              </div>
+              <div className="p-6 space-y-3">
+                <div className="flex justify-between items-center">
+                  <h4 className="font-extrabold text-sm text-salon-text-primary">Carol</h4>
+                  <span className="text-[8px] bg-primary/10 border border-primary/20 text-primary px-2.5 py-0.5 rounded font-extrabold uppercase tracking-wider">Visagista</span>
+                </div>
+                <p className="text-[11px] text-salon-text-secondary leading-relaxed">Formada em estética e visagismo capilar. Especializada em alinhamento de barba e terapia capilar.</p>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  <span className="text-[9px] bg-salon-bg border border-salon-border text-salon-text-secondary px-2.5 py-0.5 rounded font-medium">Visagismo</span>
+                  <span className="text-[9px] bg-salon-bg border border-salon-border text-salon-text-secondary px-2.5 py-0.5 rounded font-medium">Barboterapia</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Barber 3 */}
+            <div className="bg-salon-surface/80 backdrop-blur-sm border border-salon-border rounded-salon overflow-hidden flex flex-col group hover:border-primary/30 hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition-all duration-500">
+              <div className="overflow-hidden relative h-64">
+                <img
+                  src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=400"
+                  alt="Barbeiro Marcos - especialista em cortes sociais e barba clássica"
+                  className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                />
+              </div>
+              <div className="p-6 space-y-3">
+                <div className="flex justify-between items-center">
+                  <h4 className="font-extrabold text-sm text-salon-text-primary">Marcos</h4>
+                  <span className="text-[8px] bg-primary/10 border border-primary/20 text-primary px-2.5 py-0.5 rounded font-extrabold uppercase tracking-wider">Tradicional</span>
+                </div>
+                <p className="text-[11px] text-salon-text-secondary leading-relaxed">Especialista em tesoura fina clássica, barba clássica com toalha quente e massagem facial.</p>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  <span className="text-[9px] bg-salon-bg border border-salon-border text-salon-text-secondary px-2.5 py-0.5 rounded font-medium">Social Tesoura</span>
+                  <span className="text-[9px] bg-salon-bg border border-salon-border text-salon-text-secondary px-2.5 py-0.5 rounded font-medium">Toalha Quente</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 5: INSTITUCIONAL / QUEM SOMOS */}
+      <section id="sobre" className="max-w-7xl mx-auto w-full px-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+        <div className="border border-salon-border/80 bg-salon-surface p-2 rounded-salon relative group hover:border-primary/25 transition-all duration-500">
+          <img
+            src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=800"
+            alt="Processo de barboterapia de luxo na Aura Barber"
+            className="w-full h-72 md:h-96 object-cover rounded-lg filter grayscale group-hover:grayscale-0 transition-all duration-750"
+          />
+        </div>
+
+        <div className="space-y-6">
+          <span className="text-[10px] uppercase tracking-widest text-primary font-extrabold bg-primary/10 px-3 py-1 rounded-full">Nossa Tradição</span>
+          <h3 className="text-2xl md:text-3xl font-extrabold text-salon-text-primary">Onde o Cuidado Masculino Se Torna Arte</h3>
+          <p className="text-salon-text-secondary text-xs md:text-sm leading-relaxed">
+            Fundada em 2024 no coração do Itaim Bibi, a **Aura Barber &amp; Co.** nasceu com o propósito de que a barbearia 
+            deve ser um momento de pausa, descompressão e reconexão. Nossas confortáveis cadeiras clássicas de couro 
+            e o projeto de iluminação personalizado garantem que cada corte e barba sejam executados com máxima precisão.
+          </p>
+          <div className="grid grid-cols-2 gap-4 text-xs font-bold pt-2">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+              <span>Cafeteria Exclusiva</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+              <span>Ambiente Climatizado</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+              <span>Wi-Fi de Alta Velocidade</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+              <span>Manobrista no Local</span>
+            </div>
           </div>
         </div>
       </section>
