@@ -15,6 +15,7 @@ import {
   Settings,
   LogOut,
   X,
+  MessageSquare,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -26,6 +27,7 @@ export const sidebarItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/agenda", label: "Agenda", icon: CalendarDays },
   { href: "/dashboard/clientes", label: "Clientes", icon: Users },
+  { href: "/dashboard/chat", label: "Chat WhatsApp", icon: MessageSquare },
   { href: "/dashboard/profissionais", label: "Profissionais", icon: Scissors },
   { href: "/dashboard/servicos", label: "Serviços", icon: Sparkles },
   { href: "/dashboard/estoque", label: "Estoque", icon: Package },

@@ -25,7 +25,7 @@ export default function LoginPage() {
     ) {
       document.cookie = "aura-mock-session=true; path=/";
       localStorage.setItem("aura-mock-role", email === "admin@aura.com" ? "admin" : "professional");
-      localStorage.setItem("aura-mock-name", email === "admin@aura.com" ? "Administrador Aura" : "Carol (Barbeira)");
+      localStorage.setItem("aura-mock-name", email === "admin@aura.com" ? "Administrador Aura" : "Barbeiro 2");
       router.push("/dashboard");
       router.refresh();
       return;

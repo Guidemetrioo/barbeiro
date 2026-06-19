@@ -181,7 +181,7 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
     const mockProfs = [
       {
         id: 1,
-        name: "Enzo (Barbeiro Master)",
+        name: "Barbeiro 1",
         phone: "(11) 99111-2222",
         specialties: ["Corte Degradê", "Nevou", "Desenhos/Hair Tattoo"],
         commission_rate: 0.45,
@@ -192,7 +192,7 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
       },
       {
         id: 2,
-        name: "Carol (Barbeira/Visagista)",
+        name: "Barbeiro 2",
         phone: "(11) 99222-3333",
         specialties: ["Cortes Clássicos", "Selagem Capilar", "Barboterapia"],
         commission_rate: 0.40,
@@ -203,7 +203,7 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
       },
       {
         id: 3,
-        name: "Marcos (Barbeiro Tradicional)",
+        name: "Barbeiro 3",
         phone: "(11) 99333-4444",
         specialties: ["Corte Social", "Barba Toalha Quente", "Sobrancelha"],
         commission_rate: 0.35,
@@ -325,7 +325,7 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
     setFinancialEntries(mockFinances);
 
     const mockTasks: Task[] = [
-      { id: 1, title: "Organizar armário de químicos", description: "Verificar validades e agrupar por numeração.", status: "A fazer", priority: "média", due_date: "Hoje, 19:00", assigned_to: "Carol" }
+      { id: 1, title: "Organizar armário de químicos", description: "Verificar validades e agrupar por numeração.", status: "A fazer", priority: "média", due_date: "Hoje, 19:00", assigned_to: "Barbeiro 2" }
     ];
     setTasks(mockTasks);
 
@@ -353,7 +353,7 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
     if (!profs || profs.length === 0) {
       const initialProfs = [
         {
-          name: "Enzo (Barbeiro Master)",
+          name: "Barbeiro 1",
           phone: "(11) 99111-2222",
           specialties: ["Corte Degradê", "Nevou", "Desenhos/Hair Tattoo"],
           commission_rate: 0.45,
@@ -361,7 +361,7 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
           work_hours: { start: "09:00", end: "19:00" },
         },
         {
-          name: "Carol (Barbeira/Visagista)",
+          name: "Barbeiro 2",
           phone: "(11) 99222-3333",
           specialties: ["Cortes Clássicos", "Selagem Capilar", "Barboterapia"],
           commission_rate: 0.40,
@@ -369,7 +369,7 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
           work_hours: { start: "09:00", end: "20:00" },
         },
         {
-          name: "Marcos (Barbeiro Tradicional)",
+          name: "Barbeiro 3",
           phone: "(11) 99333-4444",
           specialties: ["Corte Social", "Barba Toalha Quente", "Sobrancelha"],
           commission_rate: 0.35,
@@ -524,9 +524,9 @@ export function AuraProvider({ children }: { children: React.ReactNode }) {
       const { data: dbClients } = await supabase.from("clients").select("id, name");
       const { data: dbProfs } = await supabase.from("professionals").select("id, name");
       
-      const enzoId = dbProfs?.find(p => p.name.includes("Enzo"))?.id || 1;
-      const carolId = dbProfs?.find(p => p.name.includes("Carol"))?.id || 2;
-      const marcosId = dbProfs?.find(p => p.name.includes("Marcos"))?.id || 3;
+      const enzoId = dbProfs?.find(p => p.name.includes("Barbeiro 1"))?.id || 1;
+      const carolId = dbProfs?.find(p => p.name.includes("Barbeiro 2"))?.id || 2;
+      const marcosId = dbProfs?.find(p => p.name.includes("Barbeiro 3"))?.id || 3;
       
       const brunoId = dbClients?.find(c => c.name === "Bruno Souza")?.id || 1;
       const carlosId = dbClients?.find(c => c.name === "Carlos Eduardo Santos")?.id || 2;

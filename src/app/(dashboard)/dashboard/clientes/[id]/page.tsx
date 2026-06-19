@@ -175,7 +175,7 @@ export default function ClienteDetalhePage({ params }: { params: { id: string } 
     // Generate return appointment
     addAppointment({
       client_id: client.id,
-      professional_id: 2, // default Carol
+      professional_id: 2, // default Barbeiro 2
       datetime: `${returnSuggest.raw}T10:00:00.000Z`,
       status: "Agendado",
       services: [1], // Default Cut

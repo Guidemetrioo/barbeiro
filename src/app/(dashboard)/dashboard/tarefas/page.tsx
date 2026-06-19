@@ -27,7 +27,7 @@ export default function TarefasPage() {
   const [desc, setDesc] = useState("");
   const [priority, setPriority] = useState<Task["priority"]>("média");
   const [deadline, setDeadline] = useState("Hoje, 19:00");
-  const [assigned, setAssigned] = useState("Carol");
+  const [assigned, setAssigned] = useState("Barbeiro 2");
 
   const columns = [
     { id: "A fazer", label: "A Fazer", color: "border-t-blue-500", bg: "bg-blue-500/5" },
@@ -276,7 +276,7 @@ export default function TarefasPage() {
                     onChange={(e) => setAssigned(e.target.value)}
                     className="w-full px-3 py-2 bg-salon-bg border border-salon-border rounded-lg text-xs text-salon-text-primary"
                   >
-                    {["Ana", "Carol", "Marcos", "Recepção", "Administrador"].map((name) => (
+                    {["Barbeiro 1", "Barbeiro 2", "Barbeiro 3", "Recepção", "Administrador"].map((name) => (
                       <option key={name} value={name}>
                         {name}
                       </option>

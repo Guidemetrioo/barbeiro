@@ -34,17 +34,12 @@ const timeSlots = [
   "17:00", "18:00", "19:00", "20:00"
 ];
 
-// Fallback avatars helper for mock/new barbers
-const getBarberAvatar = (profId: number, avatarUrl?: string | null) => {
-  if (avatarUrl) return avatarUrl;
-  switch (profId) {
-    case 1:
-      return "https://images.unsplash.com/photo-1621605815971-fbc98d665033?q=80&w=150"; // Enzo
-    case 2:
-      return "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=150"; // Carol
-    default:
-      return "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=150"; // Marcos/others
+// Fallback initials helper
+const getBarberInitials = (name: string) => {
+  if (name.includes("Barbeiro")) {
+    return name.replace("Barbeiro ", "B");
   }
+  return name.split(" ").map(n => n[0]).join("").slice(0, 2);
 };
 
 export default function LandingPageClient() {
@@ -421,13 +416,12 @@ export default function LandingPageClient() {
                           {(() => {
                             const selectedBarber = professionals.find(p => p.id === selectedProfId) || professionals[0];
                             if (!selectedBarber) return <span>Carregando barbeiros...</span>;
+                            const initials = getBarberInitials(selectedBarber.name);
                             return (
                               <>
-                                <img
-                                  src={getBarberAvatar(selectedBarber.id, selectedBarber.avatar_url)}
-                                  alt={selectedBarber.name}
-                                  className="w-8 h-8 rounded-full object-cover border border-primary/30 shrink-0"
-                                />
+                                <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center text-primary font-bold text-xs shrink-0">
+                                  {initials}
+                                </div>
                                 <div className="text-left">
                                   <span className="font-bold block text-xs">{selectedBarber.name}</span>
                                   {selectedBarber.specialties && selectedBarber.specialties.length > 0 && (
@@ -454,6 +448,7 @@ export default function LandingPageClient() {
                         <div className="flex flex-col gap-2.5 pt-1">
                           {professionals.map((p) => {
                             const isSelected = p.id === selectedProfId;
+                            const initials = getBarberInitials(p.name);
                             return (
                               <button
                                 key={p.id}
@@ -469,13 +464,11 @@ export default function LandingPageClient() {
                                 }`}
                               >
                                 <div className="relative shrink-0">
-                                  <img
-                                    src={getBarberAvatar(p.id, p.avatar_url)}
-                                    alt={p.name}
-                                    className={`w-12 h-12 rounded-full object-cover transition-transform duration-300 group-hover:scale-105 ${
-                                      isSelected ? "border-2 border-primary" : "border border-salon-border"
-                                    }`}
-                                  />
+                                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm transition-transform duration-300 group-hover:scale-105 ${
+                                    isSelected ? "bg-primary/20 border-2 border-primary text-primary" : "bg-salon-bg border border-salon-border text-salon-text-secondary"
+                                  }`}>
+                                    {initials}
+                                  </div>
                                 </div>
                                 <div className="text-left flex-1 min-w-0">
                                   <span className="font-bold text-xs block truncate text-salon-text-primary group-hover:text-primary transition-colors">{p.name}</span>
@@ -853,16 +846,14 @@ export default function LandingPageClient() {
             
             {/* Barber 1 */}
             <div className="bg-salon-surface/80 backdrop-blur-sm border border-salon-border rounded-salon overflow-hidden flex flex-col group hover:border-primary/30 hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition-all duration-500">
-              <div className="overflow-hidden relative h-64">
-                <img
-                  src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?q=80&w=400"
-                  alt="Barbeiro Enzo - especialista em Degradê e platinado"
-                  className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                />
+              <div className="h-64 bg-salon-bg/40 flex items-center justify-center border-b border-salon-border/50 relative group-hover:bg-primary/5 transition-all duration-500">
+                <div className="w-24 h-24 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-extrabold text-2xl transition-all duration-500 group-hover:scale-105 group-hover:border-primary/45 group-hover:bg-primary/20">
+                  B1
+                </div>
               </div>
               <div className="p-6 space-y-3">
                 <div className="flex justify-between items-center">
-                  <h4 className="font-extrabold text-sm text-salon-text-primary">Enzo</h4>
+                  <h4 className="font-extrabold text-sm text-salon-text-primary">Barbeiro 1</h4>
                   <span className="text-[8px] bg-primary/10 border border-primary/20 text-primary px-2.5 py-0.5 rounded font-extrabold uppercase tracking-wider">Master</span>
                 </div>
                 <p className="text-[11px] text-salon-text-secondary leading-relaxed">Especialista em degradê navalhado, freestyle hair art e descolorações globais platinadas.</p>
@@ -875,16 +866,14 @@ export default function LandingPageClient() {
 
             {/* Barber 2 */}
             <div className="bg-salon-surface/80 backdrop-blur-sm border border-salon-border rounded-salon overflow-hidden flex flex-col group hover:border-primary/30 hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition-all duration-500">
-              <div className="overflow-hidden relative h-64">
-                <img
-                  src="https://images.unsplash.com/photo-1596075780750-846441ecb66a?q=80&w=400"
-                  alt="Barbeira Carol - especialista em cortes clássicos e visagismo"
-                  className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                />
+              <div className="h-64 bg-salon-bg/40 flex items-center justify-center border-b border-salon-border/50 relative group-hover:bg-primary/5 transition-all duration-500">
+                <div className="w-24 h-24 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-extrabold text-2xl transition-all duration-500 group-hover:scale-105 group-hover:border-primary/45 group-hover:bg-primary/20">
+                  B2
+                </div>
               </div>
               <div className="p-6 space-y-3">
                 <div className="flex justify-between items-center">
-                  <h4 className="font-extrabold text-sm text-salon-text-primary">Carol</h4>
+                  <h4 className="font-extrabold text-sm text-salon-text-primary">Barbeiro 2</h4>
                   <span className="text-[8px] bg-primary/10 border border-primary/20 text-primary px-2.5 py-0.5 rounded font-extrabold uppercase tracking-wider">Visagista</span>
                 </div>
                 <p className="text-[11px] text-salon-text-secondary leading-relaxed">Formada em estética e visagismo capilar. Especializada em alinhamento de barba e terapia capilar.</p>
@@ -897,16 +886,14 @@ export default function LandingPageClient() {
 
             {/* Barber 3 */}
             <div className="bg-salon-surface/80 backdrop-blur-sm border border-salon-border rounded-salon overflow-hidden flex flex-col group hover:border-primary/30 hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition-all duration-500">
-              <div className="overflow-hidden relative h-64">
-                <img
-                  src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=400"
-                  alt="Barbeiro Marcos - especialista em cortes sociais e barba clássica"
-                  className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
-                />
+              <div className="h-64 bg-salon-bg/40 flex items-center justify-center border-b border-salon-border/50 relative group-hover:bg-primary/5 transition-all duration-500">
+                <div className="w-24 h-24 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-extrabold text-2xl transition-all duration-500 group-hover:scale-105 group-hover:border-primary/45 group-hover:bg-primary/20">
+                  B3
+                </div>
               </div>
               <div className="p-6 space-y-3">
                 <div className="flex justify-between items-center">
-                  <h4 className="font-extrabold text-sm text-salon-text-primary">Marcos</h4>
+                  <h4 className="font-extrabold text-sm text-salon-text-primary">Barbeiro 3</h4>
                   <span className="text-[8px] bg-primary/10 border border-primary/20 text-primary px-2.5 py-0.5 rounded font-extrabold uppercase tracking-wider">Tradicional</span>
                 </div>
                 <p className="text-[11px] text-salon-text-secondary leading-relaxed">Especialista em tesoura fina clássica, barba clássica com toalha quente e massagem facial.</p>
@@ -975,7 +962,7 @@ export default function LandingPageClient() {
               {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-4 h-4 fill-primary text-primary" />)}
             </div>
             <p className="text-salon-text-secondary leading-relaxed italic">
-              {`“Melhor degradê que já fiz em São Paulo. O Enzo é extremamente detalhista e a cerveja artesanal de cortesia estava gelada. O espaço é muito bonito e premium.”`}
+              {`“Melhor degradê que já fiz em São Paulo. O Barbeiro 1 é extremamente detalhista e a cerveja artesanal de cortesia estava gelada. O espaço é muito bonito e premium.”`}
             </p>
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-primary/15 border border-primary/20 flex items-center justify-center font-bold text-primary">
@@ -993,7 +980,7 @@ export default function LandingPageClient() {
               {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-4 h-4 fill-primary text-primary" />)}
             </div>
             <p className="text-salon-text-secondary leading-relaxed italic">
-              {`“A Carol é incrível no visagismo. Ela sugeriu mudanças no alinhamento da minha barba que valorizaram muito meu rosto. Recomendo de olhos fechados!”`}
+              {`“O Barbeiro 2 é incrível no visagismo. Ele sugeriu mudanças no alinhamento da minha barba que valorizaram muito meu rosto. Recomendo de olhos fechados!”`}
             </p>
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-primary/15 border border-primary/20 flex items-center justify-center font-bold text-primary">
@@ -1011,7 +998,7 @@ export default function LandingPageClient() {
               {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-4 h-4 fill-primary text-primary" />)}
             </div>
             <p className="text-salon-text-secondary leading-relaxed italic">
-              {`“Fiz o combo de corte e barba com toalha quente com o Marcos. A experiência é relaxante demais, toalha quente no ponto certo e massagem relaxante. Excelente.”`}
+              {`“Fiz o combo de corte e barba com toalha quente com o Barbeiro 3. A experiência é relaxante demais, toalha quente no ponto certo e massagem relaxante. Excelente.”`}
             </p>
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-primary/15 border border-primary/20 flex items-center justify-center font-bold text-primary">

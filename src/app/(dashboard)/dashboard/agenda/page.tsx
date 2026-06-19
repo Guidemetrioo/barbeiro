@@ -39,7 +39,7 @@ export default function AgendaPage() {
   // View States
   const [view, setView] = useState<"dia" | "semana">("dia");
   const [selectedDateStr, setSelectedDateStr] = useState(new Date().toISOString().split("T")[0]);
-  const [selectedMobileProf, setSelectedMobileProf] = useState(1); // Default to Marcos (3) or Ana (1)
+  const [selectedMobileProf, setSelectedMobileProf] = useState(1); // Default to Barbeiro 1
 
   // Booking Modal States
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
