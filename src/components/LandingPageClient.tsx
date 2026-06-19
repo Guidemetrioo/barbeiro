@@ -451,7 +451,7 @@ export default function LandingPageClient() {
                             : "max-h-0 opacity-0 pointer-events-none"
                         }`}
                       >
-                        <div className="grid grid-cols-2 gap-3 pt-1">
+                        <div className="flex flex-col gap-2.5 pt-1">
                           {professionals.map((p) => {
                             const isSelected = p.id === selectedProfId;
                             return (
@@ -462,30 +462,32 @@ export default function LandingPageClient() {
                                   setSelectedProfId(p.id);
                                   setIsBarberDropdownOpen(false);
                                 }}
-                                className={`p-3 border rounded-xl flex flex-col items-center text-center transition-all duration-300 group hover:scale-[1.02] ${
+                                className={`w-full p-3 border rounded-xl flex items-center gap-4 transition-all duration-300 group hover:scale-[1.01] ${
                                   isSelected
                                     ? "bg-primary/10 border-primary shadow-[0_0_15px_rgba(201,169,110,0.15)] text-primary"
                                     : "bg-salon-bg border-salon-border/60 hover:border-primary/30 text-salon-text-primary"
                                 }`}
                               >
-                                <div className="relative mb-2 shrink-0">
+                                <div className="relative shrink-0">
                                   <img
                                     src={getBarberAvatar(p.id, p.avatar_url)}
                                     alt={p.name}
-                                    className={`w-14 h-14 rounded-full object-cover transition-transform duration-300 group-hover:scale-105 ${
+                                    className={`w-12 h-12 rounded-full object-cover transition-transform duration-300 group-hover:scale-105 ${
                                       isSelected ? "border-2 border-primary" : "border border-salon-border"
                                     }`}
                                   />
-                                  {isSelected && (
-                                    <span className="absolute bottom-0 right-0 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-salon-bg shadow-sm">
-                                      <Check className="w-3.5 h-3.5 stroke-[3px]" />
+                                </div>
+                                <div className="text-left flex-1 min-w-0">
+                                  <span className="font-bold text-xs block truncate text-salon-text-primary group-hover:text-primary transition-colors">{p.name}</span>
+                                  {p.specialties && p.specialties.length > 0 && (
+                                    <span className="text-[9px] text-salon-text-secondary mt-0.5 block truncate max-w-[280px]">
+                                      {p.specialties.join(" • ")}
                                     </span>
                                   )}
                                 </div>
-                                <span className="font-bold text-[11px] leading-tight block truncate w-full">{p.name}</span>
-                                {p.specialties && p.specialties.length > 0 && (
-                                  <span className="text-[9px] text-salon-text-secondary mt-1 block truncate w-full">
-                                    {p.specialties[0]}
+                                {isSelected && (
+                                  <span className="w-5 h-5 bg-primary rounded-full flex items-center justify-center text-salon-bg shadow-sm shrink-0">
+                                    <Check className="w-3.5 h-3.5 stroke-[3px]" />
                                   </span>
                                 )}
                               </button>
