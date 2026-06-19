@@ -275,43 +275,45 @@ export default function LandingPageClient() {
       </header>
 
       {/* SECTION 1: HERO / BANNER PRINCIPAL */}
-      <section id="inicio" className="max-w-7xl mx-auto w-full px-6 py-16 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 overflow-hidden lg:overflow-visible rounded-salon lg:rounded-none">
-        {/* Background Image for Mobile only */}
+      <section id="inicio" className="max-w-7xl mx-auto w-full px-6 py-0 lg:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 overflow-hidden lg:overflow-visible rounded-salon lg:rounded-none">
+        {/* Background Image for Mobile only - Fully visible at the top */}
         <div 
-          className="absolute inset-0 z-0 bg-cover bg-center lg:hidden" 
+          className="absolute inset-x-0 top-0 h-[48vh] z-0 bg-cover bg-center lg:hidden" 
           style={{ 
-            backgroundImage: "url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=800')",
-            filter: "brightness(45%) contrast(105%)"
+            backgroundImage: "url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=800')"
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-salon-bg via-salon-bg/85 to-salon-bg/60" />
+          {/* Gentle vignette/gradient to blend the bottom with the background */}
+          <div className="absolute inset-0 bg-gradient-to-t from-salon-bg via-transparent to-black/20" />
         </div>
 
-        <div className="lg:col-span-7 space-y-6 md:pr-6 relative z-10">
-          <span className="text-[10px] bg-primary/10 border border-primary/20 text-primary px-3.5 py-1.5 rounded-full font-bold uppercase tracking-widest inline-flex items-center gap-1.5 animate-pulse">
-            <Sparkles className="w-3.5 h-3.5" /> Estilo, Cerveja &amp; Navalha
-          </span>
-          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-none text-salon-text-primary">
-            A Arte da Barbearia em <span className="text-primary bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">Alto Nível</span>
-          </h2>
-          <p className="text-salon-text-secondary text-sm md:text-base leading-relaxed max-w-xl">
-            A Aura Barber &amp; Co. combina o clássico atendimento com toalha quente and lâmina afiada 
-            com as técnicas de visagismo mais modernas. Um refúgio premium no Itaim Bibi para homens que exigem o melhor.
-          </p>
-          <div className="flex flex-wrap gap-4 pt-2">
-            <a
-              href="#agendar"
-              className="px-6 py-3.5 bg-primary hover:bg-primary-hover text-salon-bg font-extrabold rounded-salon text-xs uppercase tracking-wider transition-all duration-300 shadow-[0_0_20px_rgba(201,169,110,0.2)] hover:shadow-[0_0_30px_rgba(201,169,110,0.4)] flex items-center gap-2 hover:-translate-y-0.5 transform"
-            >
-              Agendar Horário Online
-              <Calendar className="w-4 h-4" />
-            </a>
-            <a
-              href="#servicos"
-              className="px-6 py-3.5 border border-salon-border hover:border-primary/30 text-salon-text-primary hover:text-primary font-bold rounded-salon text-xs uppercase tracking-wider transition-all duration-300 bg-salon-surface/30 hover:bg-salon-surface/60 flex items-center gap-1.5"
-            >
-              Ver Menu de Serviços
-            </a>
+        <div className="lg:col-span-7 relative z-10 pt-[38vh] pb-12 lg:pt-0 lg:pb-0">
+          <div className="bg-salon-bg/80 backdrop-blur-lg p-6 rounded-2xl border border-salon-border/50 lg:bg-transparent lg:backdrop-blur-none lg:p-0 lg:border-none space-y-6 shadow-2xl lg:shadow-none">
+            <span className="text-[10px] bg-primary/10 border border-primary/20 text-primary px-3.5 py-1.5 rounded-full font-bold uppercase tracking-widest inline-flex items-center gap-1.5 animate-pulse">
+              <Sparkles className="w-3.5 h-3.5" /> Estilo, Cerveja &amp; Navalha
+            </span>
+            <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-none text-salon-text-primary">
+              A Arte da Barbearia em <span className="text-primary bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent">Alto Nível</span>
+            </h2>
+            <p className="text-salon-text-secondary text-sm md:text-base leading-relaxed max-w-xl">
+              A Aura Barber &amp; Co. combina o clássico atendimento com toalha quente and lâmina afiada 
+              com as técnicas de visagismo mais modernas. Um refúgio premium no Itaim Bibi para homens que exigem o melhor.
+            </p>
+            <div className="flex flex-wrap gap-4 pt-2">
+              <a
+                href="#agendar"
+                className="px-6 py-3.5 bg-primary hover:bg-primary-hover text-salon-bg font-extrabold rounded-salon text-xs uppercase tracking-wider transition-all duration-300 shadow-[0_0_20px_rgba(201,169,110,0.2)] hover:shadow-[0_0_30px_rgba(201,169,110,0.4)] flex items-center gap-2 hover:-translate-y-0.5 transform"
+              >
+                Agendar Horário Online
+                <Calendar className="w-4 h-4" />
+              </a>
+              <a
+                href="#servicos"
+                className="px-6 py-3.5 border border-salon-border hover:border-primary/30 text-salon-text-primary hover:text-primary font-bold rounded-salon text-xs uppercase tracking-wider transition-all duration-300 bg-salon-surface/30 hover:bg-salon-surface/60 flex items-center gap-1.5"
+              >
+                Ver Menu de Serviços
+              </a>
+            </div>
           </div>
         </div>
 
