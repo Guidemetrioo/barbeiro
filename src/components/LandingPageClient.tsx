@@ -247,7 +247,7 @@ export default function LandingPageClient() {
   ];
 
   return (
-    <div className="min-h-screen bg-salon-bg text-salon-text-primary flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-salon-bg text-salon-text-primary flex flex-col relative overflow-x-hidden">
       
       {/* Decorative Blur Backgrounds */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(201,169,110,0.04),transparent_60%)] pointer-events-none" />
@@ -290,16 +290,18 @@ export default function LandingPageClient() {
       </header>
 
       {/* SECTION 1: HERO / BANNER PRINCIPAL */}
-      <section id="inicio" className="max-w-7xl mx-auto w-full px-6 py-0 lg:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 overflow-hidden lg:overflow-visible rounded-salon lg:rounded-none">
-        {/* Background Image for Mobile only - Fully visible at the top */}
-        <div 
-          className="absolute inset-x-0 top-0 h-[48vh] z-0 bg-cover bg-center lg:hidden" 
-          style={{ 
-            backgroundImage: "url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=800')"
-          }}
-        >
-          {/* Gentle vignette/gradient to blend the bottom with the background */}
-          <div className="absolute inset-0 bg-gradient-to-t from-salon-bg via-transparent to-black/20" />
+      <section id="inicio" className="max-w-7xl mx-auto w-full px-6 py-0 lg:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 overflow-visible rounded-salon lg:rounded-none min-h-[90vh] lg:min-h-0">
+        {/* Background Image for Mobile only - Sticky parallax effect */}
+        <div className="absolute inset-x-0 top-0 bottom-0 z-0 pointer-events-none lg:hidden">
+          <div 
+            className="sticky top-20 h-[45vh] bg-cover bg-center w-full" 
+            style={{ 
+              backgroundImage: "url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=800')"
+            }}
+          >
+            {/* Gentle vignette/gradient to blend the bottom with the background */}
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-salon-bg to-transparent" />
+          </div>
         </div>
 
         <div className="lg:col-span-7 relative z-10 pt-[38vh] pb-12 lg:pt-0 lg:pb-0">
