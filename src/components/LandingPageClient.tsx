@@ -24,6 +24,7 @@ import {
   ChevronRight,
   Download,
   Share2,
+  Check,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -32,6 +33,19 @@ const timeSlots = [
   "08:00", "09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00",
   "17:00", "18:00", "19:00", "20:00"
 ];
+
+// Fallback avatars helper for mock/new barbers
+const getBarberAvatar = (profId: number, avatarUrl?: string | null) => {
+  if (avatarUrl) return avatarUrl;
+  switch (profId) {
+    case 1:
+      return "https://images.unsplash.com/photo-1621605815971-fbc98d665033?q=80&w=150"; // Enzo
+    case 2:
+      return "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=150"; // Carol
+    default:
+      return "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=150"; // Marcos/others
+  }
+};
 
 export default function LandingPageClient() {
   const { services, professionals, appointments, addClient, addAppointment } = useAura();
@@ -111,6 +125,7 @@ export default function LandingPageClient() {
   const [isServicesExpanded, setIsServicesExpanded] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
   const [bookingStep, setBookingStep] = useState(1);
+  const [isBarberDropdownOpen, setIsBarberDropdownOpen] = useState(false);
 
   // Auto-select first available time slot when date or professional changes
   useEffect(() => {
@@ -391,19 +406,91 @@ export default function LandingPageClient() {
                       </select>
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="space-y-2">
                       <label className="block text-[10px] font-bold uppercase tracking-wider text-salon-text-secondary">Escolha seu barbeiro</label>
-                      <select
-                        value={selectedProfId}
-                        onChange={(e) => setSelectedProfId(Number(e.target.value))}
-                        className="w-full px-3.5 py-3.5 bg-salon-bg border border-salon-border rounded-lg text-xs focus:outline-none focus:border-primary/50 text-salon-text-primary cursor-pointer"
+                      
+                      {/* Retractable Button */}
+                      <button
+                        type="button"
+                        onClick={() => setIsBarberDropdownOpen(!isBarberDropdownOpen)}
+                        className="w-full px-4 py-3.5 bg-salon-bg border border-salon-border rounded-lg text-xs text-salon-text-primary flex items-center justify-between transition-all duration-300 hover:border-primary/40 focus:outline-none"
                       >
-                        {professionals.map((p) => (
-                          <option key={p.id} value={p.id} className="bg-salon-surface">
-                            {p.name}
-                          </option>
-                        ))}
-                      </select>
+                        <div className="flex items-center gap-3">
+                          {(() => {
+                            const selectedBarber = professionals.find(p => p.id === selectedProfId) || professionals[0];
+                            if (!selectedBarber) return <span>Carregando barbeiros...</span>;
+                            return (
+                              <>
+                                <img
+                                  src={getBarberAvatar(selectedBarber.id, selectedBarber.avatar_url)}
+                                  alt={selectedBarber.name}
+                                  className="w-8 h-8 rounded-full object-cover border border-primary/30 shrink-0"
+                                />
+                                <div className="text-left">
+                                  <span className="font-bold block text-xs">{selectedBarber.name}</span>
+                                  {selectedBarber.specialties && selectedBarber.specialties.length > 0 && (
+                                    <span className="text-[9px] text-salon-text-secondary block truncate max-w-[200px]">
+                                      {selectedBarber.specialties.slice(0, 2).join(" • ")}
+                                    </span>
+                                  )}
+                                </div>
+                              </>
+                            );
+                          })()}
+                        </div>
+                        <ChevronDown className={`w-4 h-4 text-salon-text-secondary transition-transform duration-300 ${isBarberDropdownOpen ? "rotate-180 text-primary" : ""}`} />
+                      </button>
+
+                      {/* Retractable Content */}
+                      <div 
+                        className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                          isBarberDropdownOpen 
+                            ? "max-h-[500px] opacity-100 py-2" 
+                            : "max-h-0 opacity-0 pointer-events-none"
+                        }`}
+                      >
+                        <div className="grid grid-cols-2 gap-3 pt-1">
+                          {professionals.map((p) => {
+                            const isSelected = p.id === selectedProfId;
+                            return (
+                              <button
+                                key={p.id}
+                                type="button"
+                                onClick={() => {
+                                  setSelectedProfId(p.id);
+                                  setIsBarberDropdownOpen(false);
+                                }}
+                                className={`p-3 border rounded-xl flex flex-col items-center text-center transition-all duration-300 group hover:scale-[1.02] ${
+                                  isSelected
+                                    ? "bg-primary/10 border-primary shadow-[0_0_15px_rgba(201,169,110,0.15)] text-primary"
+                                    : "bg-salon-bg border-salon-border/60 hover:border-primary/30 text-salon-text-primary"
+                                }`}
+                              >
+                                <div className="relative mb-2 shrink-0">
+                                  <img
+                                    src={getBarberAvatar(p.id, p.avatar_url)}
+                                    alt={p.name}
+                                    className={`w-14 h-14 rounded-full object-cover transition-transform duration-300 group-hover:scale-105 ${
+                                      isSelected ? "border-2 border-primary" : "border border-salon-border"
+                                    }`}
+                                  />
+                                  {isSelected && (
+                                    <span className="absolute bottom-0 right-0 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-salon-bg shadow-sm">
+                                      <Check className="w-3.5 h-3.5 stroke-[3px]" />
+                                    </span>
+                                  )}
+                                </div>
+                                <span className="font-bold text-[11px] leading-tight block truncate w-full">{p.name}</span>
+                                {p.specialties && p.specialties.length > 0 && (
+                                  <span className="text-[9px] text-salon-text-secondary mt-1 block truncate w-full">
+                                    {p.specialties[0]}
+                                  </span>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
 
                     <button
