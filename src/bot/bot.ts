@@ -32,6 +32,34 @@ function loadEnv() {
 
 loadEnv();
 
+// PID file management for background process control
+const pidPath = path.resolve(process.cwd(), "bot.pid");
+try {
+  fs.writeFileSync(pidPath, process.pid.toString(), "utf8");
+  console.log(`📌 PID do Bot (${process.pid}) gravado em ${pidPath}`);
+} catch (err: any) {
+  console.warn("⚠️ Não foi possível escrever o arquivo bot.pid:", err.message);
+}
+
+function cleanupPid() {
+  if (fs.existsSync(pidPath)) {
+    try {
+      fs.unlinkSync(pidPath);
+      console.log("🧹 Arquivo bot.pid removido.");
+    } catch (err) {}
+  }
+}
+
+process.on("exit", cleanupPid);
+process.on("SIGINT", () => {
+  cleanupPid();
+  process.exit(0);
+});
+process.on("SIGTERM", () => {
+  cleanupPid();
+  process.exit(0);
+});
+
 // 2. Locate Chrome/Edge executable
 function getChromeExecutablePath(): string | undefined {
   if (process.platform === "win32") {
@@ -262,8 +290,45 @@ function startChatSyncLoop(client: Client) {
   }, 2500);
 }
 
+// 8. Disconnect listener (allows logout from panel)
+function startDisconnectListener(client: Client) {
+  setInterval(async () => {
+    try {
+      const supabase = getSupabase();
+      if (!supabase) return;
+
+      const { data, error } = await supabase
+        .from("whatsapp_config")
+        .select("status")
+        .eq("id", 1)
+        .maybeSingle();
+
+      if (error) return;
+
+      if (data && data.status === "disconnect_requested") {
+        console.log("🔌 [WhatsApp Bot] Solicitação de desconexão recebida. Efetuando logout...");
+        try {
+          await client.logout();
+        } catch (logoutErr) {
+          console.warn("⚠️ Falha ao deslogar limpo, limpando diretório da sessão...");
+          const authPath = path.resolve(process.cwd(), ".wwebjs_auth");
+          if (fs.existsSync(authPath)) {
+            fs.rmSync(authPath, { recursive: true, force: true });
+          }
+        }
+        await updateBotStatus("disconnected");
+        console.log("👋 Processo do bot encerrado após solicitação de desconexão.");
+        process.exit(0);
+      }
+    } catch (err) {
+      // safe check
+    }
+  }, 3000);
+}
+
 // Start Client Process
 updateBotStatus("connecting");
+startDisconnectListener(client);
 client.initialize().catch((err) => {
   console.error("❌ Erro ao inicializar o cliente:", err);
   updateBotStatus("disconnected");

@@ -214,3 +214,46 @@ DROP POLICY IF EXISTS "Allow public read" ON public.notifications;
 CREATE POLICY "Allow public read" ON public.notifications FOR SELECT USING (true);
 DROP POLICY IF EXISTS "Allow public write" ON public.notifications;
 CREATE POLICY "Allow public write" ON public.notifications FOR ALL USING (true);
+
+-- WhatsApp Configuration Table
+CREATE TABLE IF NOT EXISTS public.whatsapp_config (
+  id INT PRIMARY KEY DEFAULT 1,
+  status TEXT DEFAULT 'disconnected',
+  qr_code TEXT,
+  phone TEXT,
+  reminder_minutes_a INT DEFAULT 30,
+  reminder_minutes_b INT DEFAULT 10,
+  enable_reminders BOOLEAN DEFAULT true,
+  enable_confirmations BOOLEAN DEFAULT true,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS on whatsapp_config
+ALTER TABLE public.whatsapp_config ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow public read" ON public.whatsapp_config;
+CREATE POLICY "Allow public read" ON public.whatsapp_config FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Allow public write" ON public.whatsapp_config;
+CREATE POLICY "Allow public write" ON public.whatsapp_config FOR ALL USING (true);
+
+-- Populate initial row
+INSERT INTO public.whatsapp_config (id, status, reminder_minutes_a, reminder_minutes_b, enable_reminders, enable_confirmations)
+VALUES (1, 'disconnected', 30, 10, true, true)
+ON CONFLICT (id) DO NOTHING;
+
+-- WhatsApp Messages Table (Chat History)
+CREATE TABLE IF NOT EXISTS public.whatsapp_messages (
+  id SERIAL PRIMARY KEY,
+  chat_jid TEXT NOT NULL,
+  contact_name TEXT,
+  body TEXT NOT NULL,
+  from_me BOOLEAN DEFAULT false,
+  status TEXT CHECK (status in ('pending', 'sent', 'failed', 'received')) DEFAULT 'received',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS on whatsapp_messages
+ALTER TABLE public.whatsapp_messages ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow public read" ON public.whatsapp_messages;
+CREATE POLICY "Allow public read" ON public.whatsapp_messages FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Allow public write" ON public.whatsapp_messages;
+CREATE POLICY "Allow public write" ON public.whatsapp_messages FOR ALL USING (true);

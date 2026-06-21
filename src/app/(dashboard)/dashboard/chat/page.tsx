@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, Send, Smartphone, User, MessageSquare, Check, CheckCheck, Loader2, Sparkles, AlertCircle } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import Link from "next/link";
 
 interface Message {
   id: number;
@@ -168,7 +169,11 @@ export default function ChatPage() {
       case "received":
         return null;
       case "failed":
-        return <AlertCircle className="w-3.5 h-3.5 text-rose-500" title="Falha ao entregar" />;
+        return (
+          <span title="Falha ao entregar">
+            <AlertCircle className="w-3.5 h-3.5 text-rose-500" />
+          </span>
+        );
       default: // sent or read
         return <CheckCheck className="w-3.5 h-3.5 text-primary" />;
     }
@@ -206,10 +211,18 @@ export default function ChatPage() {
               Robô Ativo
             </span>
           ) : botConnected === false ? (
-            <span className="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-amber-500" />
-              Robô Desconectado
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-amber-500" />
+                Robô Desconectado
+              </span>
+              <Link 
+                href="/dashboard/configuracoes?tab=whatsapp"
+                className="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/25 hover:border-primary/50 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all"
+              >
+                Configurar
+              </Link>
+            </div>
           ) : (
             <span className="bg-salon-border/40 text-salon-text-secondary border border-salon-border px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
               <Loader2 className="w-3 h-3 animate-spin" />

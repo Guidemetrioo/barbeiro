@@ -9,10 +9,16 @@ export default function ConfiguracoesPage() {
   const [loading, setLoading] = useState(false);
   const [dbErrorAlert, setDbErrorAlert] = useState(false);
   
+  // Process states for the background bot
+  const [processRunning, setProcessRunning] = useState(false);
+  const [startingBot, setStartingBot] = useState(false);
+  const [stoppingBot, setStoppingBot] = useState(false);
+  
   // Bot settings state
   const [botConfig, setBotConfig] = useState({
     status: "disconnected",
     qr_code: "",
+    phone: "",
     reminder_minutes_a: 30,
     reminder_minutes_b: 10,
     enable_reminders: true,
@@ -46,6 +52,7 @@ export default function ConfiguracoesPage() {
         setBotConfig({
           status: data.status || "disconnected",
           qr_code: data.qr_code || "",
+          phone: data.phone || "",
           reminder_minutes_a: data.reminder_minutes_a ?? 30,
           reminder_minutes_b: data.reminder_minutes_b ?? 10,
           enable_reminders: data.enable_reminders !== false,
@@ -57,10 +64,51 @@ export default function ConfiguracoesPage() {
     }
   };
 
+  const checkProcessStatus = async () => {
+    try {
+      const res = await fetch("/api/bot");
+      const data = await res.json();
+      setProcessRunning(!!data.running);
+    } catch (err) {
+      console.error("Erro ao checar status do processo do bot:", err);
+    }
+  };
+
+  const handleStartBot = async () => {
+    setStartingBot(true);
+    try {
+      const res = await fetch("/api/bot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "start" }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        alert("Erro ao iniciar o bot: " + data.message);
+      } else {
+        setBotConfig((prev) => ({ ...prev, status: "connecting" }));
+        setProcessRunning(true);
+      }
+    } catch (err: any) {
+      alert("Erro ao conectar com a API: " + (err.message || err));
+    } finally {
+      setStartingBot(false);
+    }
+  };
+
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get("tab");
+      if (tabParam === "whatsapp" || tabParam === "perfil") {
+        setActiveTab(tabParam as any);
+      }
+    }
     fetchBotConfig();
+    checkProcessStatus();
     const interval = setInterval(() => {
       fetchBotConfig();
+      checkProcessStatus();
     }, 4000);
     return () => clearInterval(interval);
   }, []);
@@ -74,6 +122,7 @@ export default function ConfiguracoesPage() {
           id: 1,
           status: botConfig.status,
           qr_code: botConfig.qr_code,
+          phone: botConfig.phone,
           reminder_minutes_a: botConfig.reminder_minutes_a,
           reminder_minutes_b: botConfig.reminder_minutes_b,
           enable_reminders: botConfig.enable_reminders,
@@ -176,6 +225,35 @@ export default function ConfiguracoesPage() {
     } catch (err: any) {
       setTestResult({ success: false, message: err.message || "Falha ao executar teste." });
       setTestLoading(false);
+    }
+  };
+
+  const handleDisconnectBot = async () => {
+    if (!confirm("Tem certeza que deseja desconectar o WhatsApp ativo? O robô deslogará e gerará um novo QR code para escaneamento.")) return;
+    setStoppingBot(true);
+    try {
+      const { error } = await supabase
+        .from("whatsapp_config")
+        .update({ status: "disconnect_requested" })
+        .eq("id", 1);
+      
+      if (error) {
+        alert("Erro ao solicitar desconexão: " + error.message);
+      } else {
+        setBotConfig(prev => ({ ...prev, status: "connecting" }));
+        // Also call the API to ensure the process is stopped
+        await fetch("/api/bot", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "stop" }),
+        });
+        setProcessRunning(false);
+        setBotConfig(prev => ({ ...prev, status: "disconnected" }));
+      }
+    } catch (err: any) {
+      console.error(err);
+    } finally {
+      setStoppingBot(false);
     }
   };
 
@@ -358,33 +436,91 @@ export default function ConfiguracoesPage() {
               )}
 
               {botConfig.status === "connected" && (
-                <div className="bg-emerald-500/10 border border-emerald-500/25 rounded-salon p-4 flex gap-3 text-xs text-emerald-200">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                  <div>
-                    <p className="font-bold">Robô conectado com sucesso!</p>
-                    <p className="text-emerald-200/80 mt-0.5">O sistema está ativamente ouvindo as marcações de agendamento e enviando os disparos automáticos.</p>
+                <div className="bg-emerald-500/10 border border-emerald-500/25 rounded-salon p-4 flex justify-between items-center text-xs text-emerald-200">
+                  <div className="flex gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                    <div>
+                      <p className="font-bold">Robô conectado com sucesso!</p>
+                      <p className="text-emerald-200/80 mt-0.5">O sistema está ativamente ouvindo as marcações de agendamento e enviando os disparos automáticos.</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleDisconnectBot}
+                    disabled={stoppingBot}
+                    className="bg-rose-500/10 hover:bg-rose-500/20 disabled:opacity-50 text-rose-400 border border-rose-500/25 hover:border-rose-500/40 px-3 py-1.5 rounded-salon text-[10px] uppercase font-bold tracking-wider transition-all flex items-center gap-1.5"
+                  >
+                    {stoppingBot && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                    Desconectar
+                  </button>
+                </div>
+              )}
+
+              {botConfig.status === "disconnected" && (
+                <div className="bg-salon-bg border border-salon-border rounded-salon p-5 space-y-4">
+                  <div className="flex items-start gap-3">
+                    <XCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <p className="font-semibold text-xs text-salon-text-primary">
+                        O robô está atualmente desligado ou sem sessão ativa.
+                      </p>
+                      <p className="text-xs text-salon-text-secondary leading-relaxed">
+                        Inicie o robô para gerar o QR Code de conexão e começar a enviar lembretes automáticos.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-salon-border/30 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                    <button
+                      onClick={handleStartBot}
+                      disabled={startingBot || processRunning}
+                      className="bg-primary hover:bg-primary-hover disabled:opacity-50 text-salon-bg font-semibold px-4 py-2.5 rounded-salon text-xs transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(201,169,110,0.15)]"
+                    >
+                      {startingBot || (processRunning && botConfig.status === "disconnected") ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-salon-bg" />
+                          Iniciando Processo...
+                        </>
+                      ) : (
+                        <>
+                          <RefreshCw className="w-4 h-4" />
+                          Ligar Robô / Iniciar Conexão
+                        </>
+                      )}
+                    </button>
+                    <span className="text-[10px] text-salon-text-secondary leading-relaxed max-w-md">
+                      Isso iniciará o processo <code className="bg-salon-surface border border-salon-border px-1 py-0.5 rounded font-mono">src/bot/bot.ts</code> no servidor em segundo plano.
+                    </span>
                   </div>
                 </div>
               )}
 
-              {(botConfig.status === "disconnected" || botConfig.status === "connecting") && (
-                <div className="bg-salon-bg border border-salon-border rounded-salon p-4 text-xs text-salon-text-secondary leading-relaxed">
-                  {botConfig.status === "connecting" ? (
-                    <p className="flex items-center gap-2">
-                      <RefreshCw className="w-4 h-4 animate-spin text-primary" />
-                      Inicializando o robô e abrindo navegador interno... Isso pode levar alguns segundos.
-                    </p>
-                  ) : (
-                    <p className="flex items-center gap-2">
-                      <XCircle className="w-4 h-4 text-rose-400" />
-                      O robô está atualmente desligado ou sem sessão ativa. Inicie a execução do bot no terminal (<code className="bg-salon-surface border border-salon-border px-1 rounded font-mono">npm run bot</code>) para gerar o QR Code.
-                    </p>
-                  )}
+              {botConfig.status === "connecting" && (
+                <div className="bg-salon-bg border border-salon-border rounded-salon p-5 flex items-center gap-3 text-xs text-salon-text-secondary leading-relaxed">
+                  <RefreshCw className="w-5 h-5 animate-spin text-primary shrink-0" />
+                  <div>
+                    <p className="font-semibold text-salon-text-primary">Inicializando o robô e abrindo navegador interno...</p>
+                    <p className="text-[11px] mt-0.5">Isso pode levar alguns segundos. O QR Code aparecerá automaticamente nesta tela em seguida.</p>
+                  </div>
                 </div>
               )}
 
               <div className="space-y-4 pt-2">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-salon-text-secondary">Regras de Automação</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-salon-text-secondary">Configuração do Canal</h4>
+                <div>
+                  <label className="block text-xs font-medium text-salon-text-secondary mb-2">Número do WhatsApp do Robô</label>
+                  <input
+                    type="text"
+                    placeholder="Ex: 5511999999999"
+                    value={botConfig.phone}
+                    onChange={(e) => setBotConfig(prev => ({ ...prev, phone: e.target.value }))}
+                    className="w-full px-3.5 py-2.5 bg-salon-bg border border-salon-border rounded-lg text-xs text-salon-text-primary focus:outline-none focus:border-primary transition-all"
+                  />
+                  <span className="text-[10px] text-salon-text-secondary leading-relaxed mt-1 block">
+                    Este número é preenchido automaticamente quando o robô conecta, mas você pode definir manualmente se desejar.
+                  </span>
+                </div>
+
+                <h4 className="text-xs font-bold uppercase tracking-wider text-salon-text-secondary pt-2">Regras de Automação</h4>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <label className="flex items-center justify-between p-3.5 bg-salon-bg border border-salon-border rounded-lg cursor-pointer hover:border-primary/45 transition-all">
