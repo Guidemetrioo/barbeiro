@@ -52,6 +52,14 @@ export async function POST(req: Request) {
     const { action } = await req.json();
 
     if (action === "start") {
+      // Detect if running on Vercel / serverless environment
+      if (process.env.VERCEL === "1" || process.env.NOW_REGION) {
+        return NextResponse.json({
+          success: false,
+          message: "O robô de WhatsApp não pode ser iniciado a partir do servidor da Vercel, pois a Vercel usa funções Serverless temporárias que não permitem processos em segundo plano ou navegadores Chrome integrados. O robô deve ser executado no seu computador local (ou em uma VPS dedicada) rodando o comando 'npm run bot' no terminal."
+        });
+      }
+
       // Check if already running
       if (fs.existsSync(pidPath)) {
         const pid = parseInt(fs.readFileSync(pidPath, "utf8").trim(), 10);

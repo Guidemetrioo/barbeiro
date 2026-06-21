@@ -42,6 +42,7 @@ export default function ConfiguracoesPage() {
         .maybeSingle();
 
       if (error) {
+        console.error("Erro ao buscar configurações do WhatsApp no Supabase:", error);
         if (error.code === "PGRST116" || error.message.includes("does not exist")) {
           setDbErrorAlert(true);
         }
@@ -86,7 +87,7 @@ export default function ConfiguracoesPage() {
       });
       const data = await res.json();
       if (!data.success) {
-        alert("Erro ao iniciar o bot: " + data.message);
+        alert("Erro ao iniciar o bot: " + (data.message || data.error || "Erro desconhecido"));
       } else {
         setBotConfig((prev) => ({ ...prev, status: "connecting" }));
         setProcessRunning(true);
