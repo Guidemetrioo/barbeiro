@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { startReminderLoop } from "./reminder";
 import { getSupabase } from "./db";
+import { handleIncomingMessage } from "./flow";
 
 // 1. Load .env.local variables
 function loadEnv() {
@@ -178,7 +179,7 @@ client.on("disconnected", (reason) => {
   updateBotStatus("disconnected");
 });
 
-// 5. Incoming message handler (inbound chat)
+// 5. Incoming message handler (inbound chat + chatbot auto-responses)
 client.on("message", async (msg) => {
   try {
     const supabase = getSupabase();
@@ -207,6 +208,28 @@ client.on("message", async (msg) => {
     }
   } catch (err: any) {
     console.warn("⚠️ [Chat Inbox] Falha ao processar mensagem recebida:", err.message || err);
+  }
+
+  // Auto-responder flow logic (check if chatbot responses are enabled in Supabase)
+  try {
+    const supabase = getSupabase();
+    if (supabase) {
+      const { data: config } = await supabase
+        .from("whatsapp_config")
+        .select("enable_responses")
+        .eq("id", 1)
+        .maybeSingle();
+
+      if (config && config.enable_responses === false) {
+        console.log("ℹ️ [Chatbot Flow] Auto-respostas (chatbot) desativadas nas configurações.");
+      } else {
+        await handleIncomingMessage(msg, client);
+      }
+    } else {
+      await handleIncomingMessage(msg, client);
+    }
+  } catch (flowErr: any) {
+    console.error("❌ [Chatbot Flow] Erro ao rodar fluxo para mensagem recebida:", flowErr.message || flowErr);
   }
 });
 

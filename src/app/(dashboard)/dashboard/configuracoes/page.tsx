@@ -531,7 +531,11 @@ export default function ConfiguracoesPage() {
                     <input 
                       type="checkbox"
                       checked={botConfig.enable_reminders}
-                      onChange={(e) => setBotConfig(prev => ({ ...prev, enable_reminders: e.target.checked }))}
+                      onChange={async (e) => {
+                        const val = e.target.checked;
+                        setBotConfig(prev => ({ ...prev, enable_reminders: val }));
+                        await supabase.from("whatsapp_config").update({ enable_reminders: val }).eq("id", 1);
+                      }}
                       className="w-4 h-4 accent-primary rounded cursor-pointer"
                     />
                   </label>
@@ -541,7 +545,11 @@ export default function ConfiguracoesPage() {
                     <input 
                       type="checkbox"
                       checked={botConfig.enable_confirmations}
-                      onChange={(e) => setBotConfig(prev => ({ ...prev, enable_confirmations: e.target.checked }))}
+                      onChange={async (e) => {
+                        const val = e.target.checked;
+                        setBotConfig(prev => ({ ...prev, enable_confirmations: val }));
+                        await supabase.from("whatsapp_config").update({ enable_confirmations: val }).eq("id", 1);
+                      }}
                       className="w-4 h-4 accent-primary rounded cursor-pointer"
                     />
                   </label>
@@ -551,7 +559,11 @@ export default function ConfiguracoesPage() {
                     <input 
                       type="checkbox"
                       checked={botConfig.enable_responses}
-                      onChange={(e) => setBotConfig(prev => ({ ...prev, enable_responses: e.target.checked }))}
+                      onChange={async (e) => {
+                        const val = e.target.checked;
+                        setBotConfig(prev => ({ ...prev, enable_responses: val }));
+                        await supabase.from("whatsapp_config").update({ enable_responses: val }).eq("id", 1);
+                      }}
                       className="w-4 h-4 accent-primary rounded cursor-pointer"
                     />
                   </label>
