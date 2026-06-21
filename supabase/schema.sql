@@ -225,6 +225,7 @@ CREATE TABLE IF NOT EXISTS public.whatsapp_config (
   reminder_minutes_b INT DEFAULT 10,
   enable_reminders BOOLEAN DEFAULT true,
   enable_confirmations BOOLEAN DEFAULT true,
+  enable_responses BOOLEAN DEFAULT true,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -236,8 +237,8 @@ DROP POLICY IF EXISTS "Allow public write" ON public.whatsapp_config;
 CREATE POLICY "Allow public write" ON public.whatsapp_config FOR ALL USING (true);
 
 -- Populate initial row
-INSERT INTO public.whatsapp_config (id, status, reminder_minutes_a, reminder_minutes_b, enable_reminders, enable_confirmations)
-VALUES (1, 'disconnected', 30, 10, true, true)
+INSERT INTO public.whatsapp_config (id, status, reminder_minutes_a, reminder_minutes_b, enable_reminders, enable_confirmations, enable_responses)
+VALUES (1, 'disconnected', 30, 10, true, true, true)
 ON CONFLICT (id) DO NOTHING;
 
 -- WhatsApp Messages Table (Chat History)

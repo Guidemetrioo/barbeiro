@@ -23,6 +23,7 @@ export default function ConfiguracoesPage() {
     reminder_minutes_b: 10,
     enable_reminders: true,
     enable_confirmations: true,
+    enable_responses: true,
   });
 
   // Test flow state
@@ -57,6 +58,7 @@ export default function ConfiguracoesPage() {
           reminder_minutes_b: data.reminder_minutes_b ?? 10,
           enable_reminders: data.enable_reminders !== false,
           enable_confirmations: data.enable_confirmations !== false,
+          enable_responses: data.enable_responses !== false,
         });
       }
     } catch (err) {
@@ -127,6 +129,7 @@ export default function ConfiguracoesPage() {
           reminder_minutes_b: botConfig.reminder_minutes_b,
           enable_reminders: botConfig.enable_reminders,
           enable_confirmations: botConfig.enable_confirmations,
+          enable_responses: botConfig.enable_responses,
           updated_at: new Date().toISOString()
         });
 
@@ -522,9 +525,9 @@ export default function ConfiguracoesPage() {
 
                 <h4 className="text-xs font-bold uppercase tracking-wider text-salon-text-secondary pt-2">Regras de Automação</h4>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <label className="flex items-center justify-between p-3.5 bg-salon-bg border border-salon-border rounded-lg cursor-pointer hover:border-primary/45 transition-all">
-                    <span className="text-xs font-semibold">Enviar Lembretes de Agenda</span>
+                    <span className="text-xs font-semibold">Enviar Lembretes</span>
                     <input 
                       type="checkbox"
                       checked={botConfig.enable_reminders}
@@ -534,11 +537,21 @@ export default function ConfiguracoesPage() {
                   </label>
 
                   <label className="flex items-center justify-between p-3.5 bg-salon-bg border border-salon-border rounded-lg cursor-pointer hover:border-primary/45 transition-all">
-                    <span className="text-xs font-semibold">Confirmar Marcações na Hora</span>
+                    <span className="text-xs font-semibold">Confirmar na Hora</span>
                     <input 
                       type="checkbox"
                       checked={botConfig.enable_confirmations}
                       onChange={(e) => setBotConfig(prev => ({ ...prev, enable_confirmations: e.target.checked }))}
+                      className="w-4 h-4 accent-primary rounded cursor-pointer"
+                    />
+                  </label>
+
+                  <label className="flex items-center justify-between p-3.5 bg-salon-bg border border-salon-border rounded-lg cursor-pointer hover:border-primary/45 transition-all">
+                    <span className="text-xs font-semibold">Responder (Chatbot)</span>
+                    <input 
+                      type="checkbox"
+                      checked={botConfig.enable_responses}
+                      onChange={(e) => setBotConfig(prev => ({ ...prev, enable_responses: e.target.checked }))}
                       className="w-4 h-4 accent-primary rounded cursor-pointer"
                     />
                   </label>

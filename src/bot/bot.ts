@@ -32,8 +32,11 @@ function loadEnv() {
 
 loadEnv();
 
-// PID file management for background process control
-const pidPath = path.resolve(process.cwd(), "bot.pid");
+// PID file management for background process control (written to node_modules to avoid tsx --watch infinite loops)
+const pidPath = fs.existsSync(path.resolve(process.cwd(), "node_modules"))
+  ? path.resolve(process.cwd(), "node_modules", "bot-whatsapp.pid")
+  : path.resolve(process.cwd(), "bot-whatsapp.pid");
+
 try {
   fs.writeFileSync(pidPath, process.pid.toString(), "utf8");
   console.log(`📌 PID do Bot (${process.pid}) gravado em ${pidPath}`);

@@ -3,7 +3,9 @@ import fs from "fs";
 import path from "path";
 import { spawn } from "child_process";
 
-const pidPath = path.resolve(process.cwd(), "bot.pid");
+const pidPath = fs.existsSync(path.resolve(process.cwd(), "node_modules"))
+  ? path.resolve(process.cwd(), "node_modules", "bot-whatsapp.pid")
+  : path.resolve(process.cwd(), "bot-whatsapp.pid");
 
 // Helper to check if a process is running
 function isProcessRunning(pid: number): boolean {
